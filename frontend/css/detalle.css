@@ -1,0 +1,315 @@
+/* =====================================================
+   DETALLE DESTINO (limpio y responsivo)
+===================================================== */
+.detalle {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 1000px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: linear-gradient(180deg, #111827 0%, #0f1724 100%);
+    border-radius: 18px;
+    padding: 22px;
+    display: flex;
+    gap: 22px;
+    z-index: 9999;
+    box-shadow: 0 12px 40px rgba(2,6,23,0.8);
+    color: #e5e7eb;
+}
+
+.detalle.oculto {
+    display: none;
+}
+
+/* botón cerrar */
+.detalle .cerrar {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: transparent;
+    color: #e5e7eb;
+    font-size: 26px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Galería y media */
+.galeria {
+    flex: 0 0 45%;
+    min-width: 260px;
+}
+
+.imagen-principal {
+    position: relative;
+}
+
+.imagen-principal img {
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    display: block;
+    object-fit: cover;
+}
+
+.miniaturas {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    align-items: center;
+}
+
+.miniaturas img {
+    width: 64px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    border: 2px solid transparent;
+}
+
+.miniaturas img:hover,
+.miniaturas img.active {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    border-color: rgba(255,255,255,0.08);
+}
+
+/* Información lateral */
+.detalle-info {
+    flex: 1 1 auto;
+    background: rgba(255,255,255,0.03);
+    padding: 18px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detalle-info h2 {
+    color: #26c6da;
+    margin: 0 0 6px 0;
+}
+
+.destino-resumen {
+    display: flex;
+    gap: 12px;
+    background: rgba(255,255,255,0.02);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.destino-resumen img {
+    width: 84px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.destino-resumen h3 {
+    margin: 0;
+    color: #e6eef8;
+}
+
+.destino-resumen p {
+    margin: 2px 0;
+    color: #c7d2e5;
+}
+
+.precio {
+    font-weight: 700;
+    color: #60a5fa;
+}
+
+/* Botones */
+.reservar {
+    background: #1e88e5;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.reservar:hover {
+    background: #26c6da;
+}
+
+.info-detalle button {
+    background: linear-gradient(90deg,#1b6ca8,#1abc9c);
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.info-detalle button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(11,102,138,0.18);
+}
+
+/* Método de pago */
+.metodo-pago label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #c7d2e5;
+}
+
+.metodo-pago select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    color: #e5e7eb;
+    margin-bottom: 16px;
+}
+
+.btn-pagar {
+    width: 100%;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    background: linear-gradient(90deg,#1b6ca8,#1abc9c);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-pagar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+}
+
+/* Overlay para modal si se usa */
+.modal-detalle {
+    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* TITULO-DETALLES*/
+.titulo-overlay {
+    position: absolute;
+    bottom: 18px;
+    left: 18px;
+    color: white;
+    text-shadow: 0 0 8px rgba(0,0,0,0.7);
+}
+
+/* Responsividad */
+@media (max-width: 800px) {
+    .detalle {
+        flex-direction: column;
+        align-items: stretch;
+        width: 94%;
+        top: 6%;
+        transform: translateX(-50%);
+        left: 50%;
+        max-height: 88vh;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .galeria { flex: 0 0 auto; width: 100%; min-width: 0; }
+    .detalle-info { width: 100%; margin-left: 0; }
+    .miniaturas { overflow-x: auto; }
+}
+
+@media (max-width: 420px) {
+    .miniaturas img { width: 56px; height: 42px; }
+}
+
+/* ============================= */
+/* VENTANA EMERGENTE LOGIN */
+/* ============================= */
+
+.modal-login {
+    display: none; /* Se activa con JS */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Caja del contenido */
+.modal-contenido {
+    background: #ffffff;
+    padding: 30px;
+    width: 400px;
+    max-width: 90%;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    animation: aparecer 0.3s ease;
+}
+
+/* Título */
+.modal-contenido h2 {
+    margin-bottom: 10px;
+    color: #1e88e5;
+}
+
+/* Texto */
+.modal-contenido p {
+    margin-bottom: 20px;
+    color: #444;
+}
+
+/* Botones */
+.modal-contenido a {
+    display: inline-block;
+    margin: 8px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    background: #1e88e5;
+    color: white;
+    transition: 0.3s;
+}
+
+.modal-contenido a:hover {
+    background: #26c6da;
+}
+
+/* Botón cancelar */
+.modal-contenido button {
+    margin-top: 15px;
+    border: none;
+    background: transparent;
+    color: #999;
+    cursor: pointer;
+}
+
+.modal-contenido button:hover {
+    color: #000;
+}
+
+/* Animación */
+@keyframes aparecer {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

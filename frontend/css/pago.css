@@ -1,0 +1,272 @@
+/* ===== PÁGINA PAGO ===== */
+.pago-page {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(rgba(10,37,64,0.65), rgba(10,37,64,0.65)),
+                url("https://images.unsplash.com/photo-1505691938895-1758d7feb511");
+    background-size: cover;
+    background-position: center;
+    padding-bottom: 40px;
+}
+
+/* HEADER */
+.header-pago {
+    text-align: center;
+    padding: 40px 20px 20px;
+    color: white;
+}
+
+.header-pago h1 {
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 2rem;
+}
+
+.header-pago p {
+    margin-top: 8px;
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+/* CONTENEDOR */
+.pago-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px 40px;
+    min-height: 70vh;
+    margin-top: 20px;
+}
+
+/* CARD */
+.pago-card {
+    background: rgba(17,25,40,0.95);
+    /* Esto es para que el fondo se vea borroso, pero no funciona en algunos navegadores sin el prefijo -webkit- */
+    -webkit-backdrop-filter: blur(10px); /* esto es porque se explota y no reconoce lo otro */
+    backdrop-filter: blur(10px); 
+    border-radius: 18px;
+    padding: 32px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: white;
+}
+
+.pago-titulo {
+    margin: 0 0 20px 0;
+    font-size: 1.3rem;
+    color: #26c6da;
+    text-align: center;
+}
+
+/* RESUMEN DESTINO */
+.destino-resumen {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.destino-resumen img {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.resumen-info {
+    flex: 1;
+}
+
+.resumen-info h3 {
+    margin: 0 0 4px 0;
+    color: #26c6da;
+    font-size: 1.1rem;
+}
+
+.resumen-info p {
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.precio-resumen {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    opacity: 0.9;
+}
+
+.precio-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    color: #3DDAD7;
+}
+
+/* FORMULARIO */
+.formulario-pago {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.formulario-pago h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #e6eef8;
+}
+
+.campo-pago {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campo-pago label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.campo-pago input,
+.campo-pago select {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.campo-pago input::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+
+.campo-pago input:focus,
+.campo-pago select:focus {
+    outline: none;
+    border-color: #26c6da;
+    background: rgba(255,255,255,0.12);
+    box-shadow: 0 0 8px rgba(38,198,218,0.2);
+}
+
+.campo-pago select option {
+    background: #111;
+    color: white;
+}
+
+/* CAMPOS EN FILA */
+.campo-fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* CHECKBOX */
+.campo-pago.checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.campo-pago.checkbox input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.campo-pago.checkbox label {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* BOTONES */
+.btn-pagar, .btn-cancelar {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-pagar {
+    background: linear-gradient(135deg, #00b3b3, #008080);
+    color: white;
+}
+
+.btn-pagar:hover {
+    background: linear-gradient(135deg, #00d4d4, #009999);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,179,179,0.4);
+}
+
+.btn-cancelar {
+    background: transparent;
+    color: #cbd5e1;
+    border: 1px solid rgba(255,255,255,0.2);
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-cancelar:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.4);
+    color: white;
+}
+
+/* CAMPOS TARJETA (inicialmente ocultos) */
+.tarjeta-campos {
+    display: none; /* oculto por defecto; JS cambiará la clase 'mostrar' cuando corresponda */
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Clase que habilita la visualización de los campos de tarjeta */
+.tarjeta-campos.mostrar {
+    display: flex;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+    .pago-card {
+        padding: 20px;
+    }
+
+    .destino-resumen {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .destino-resumen img {
+        width: 100%;
+        height: 150px;
+    }
+
+    .campo-fila {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-pagar, .btn-cancelar {
+        padding: 10px 16px;
+        font-size: 0.95rem;
+    }
+}
