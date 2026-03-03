@@ -20,57 +20,73 @@
 
     <!-- ================= HEADER ================= -->
     <header>
-        <div class="header-brand">
-            <img src="img/Logo.png" alt="Logo THE TOURIST RINCÓN" class="logo">
-            <h1>THE TOURIST RINCÓN</h1>
-        </div>
-        <p>Destinos Turísticos Viaja, descubre y planifica tu próxima aventura</p>
+         <nav class="main-nav">
+        <div class="nav-container">
+            <div class="header-brand">
+                <img src="img/Logo.png" alt="Logo THE TOURIST RINCÓN" class="logo">
+                <div class="logo-text">
+                    <h1>THE TOURIST RINCÓN</h1>
+                    <span>Viaja, descubre y planifica</span>
+                </div>
+            </div>
 
-    </header>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="reservas.html">Reservas</a></li>
+                <li><a href="historial.html">Historial</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+
+            <div class="nav-user">
+                <div class="account-container">
+                    <button id="accountBtn" class="btn-login-modern">
+                        <i class="fa-solid fa-user"></i> Iniciar Sesión
+                    </button>
+                    <!-- Mantenemos tu menú desplegable original -->
+                    <div id="accountMenu" class="account-menu oculto">
+                        <a href="#">Mi cuenta</a>                
+                        <a href="#">Configuración</a>
+                        <hr>
+                        <a href="#" class="logout">Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= HERO (Sirve como banner principal) ================= -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h2 class="hero-title">Destinos Turísticos</h2>
+            <p class="hero-subtitle">Viaja, descubre y planifica tu próxima aventura</p>
+
+            <div class="search-bar-container">
+                <div class="search-glass-wrapper">
+                    <input type="text" id="buscar" placeholder="Buscar destino, país o categoría...">
+                </div>
+                <!-- Botón del bot integrado -->
+                <button class="hero-bot-btn" onclick="abrirBot()">
+                    <i class="fa-solid fa-robot"></i> Pregúntale al bot
+                </button>
+            </div>
+        </div>
+    </section>
+    </header>    
 
     <!-- ================= CHAT BOT ================= -->
     <div id="chatBot" class="chat-bot oculto">
         <div class="chat-header">
-            <span>🤖 Asistente Turístico</span>
-            <button class="chat-close" onclick="cerrarBot()" aria-label="Cerrar chat" title="Cerrar chat">✕</button>
+            <h3>Asistente Turístico</h3>
+            <button onclick="cerrarBot()" class="chat-close">✕</button>
         </div>
-        <div class="chat-body" id="chatMensajes">
-            <div class="mensaje-bot">¡Hola! 👋 Soy tu asistente turístico. ¿En qué puedo ayudarte?</div>
+        <div id="chatMensajes" class="chat-mensajes">
+            <div class="mensaje-bot">¡Hola! Soy tu asistente turístico. ¿Cómo puedo ayudarte? Pregúntame por destinos baratos, mejores ratings, playas, o más. 🌍</div>
         </div>
-        <div class="chat-input">
-            <input type="text" id="preguntaBot" placeholder="Escribe tu pregunta...">
-            <button onclick="preguntarBot()" title="Enviar pregunta" aria-label="Enviar pregunta">→</button>
-        </div>
-    </div>
-
-    <section class="buscador">
-
-    <div class="buscador-left">
-        <button class="bot-btn" onclick="abrirBot()">🤖 Pregúntale al bot</button>
-        <input type="text" id="buscar" placeholder="Buscar destino, país o categoría...">        
-        <button class="icon-buscar-btn" title="Buscar" aria-label="Buscar">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-    </div>
-
-    <!-- ICONOS DERECHA -->
-    <div class="mi-cuenta-icons">
-        <div class="account-container">
-            <button id="accountBtn" class="icon-cuenta-btn" title="Mi cuenta" aria-label="Mi cuenta">
-                <i class="fa-solid fa-user"></i>
-            </button>
-
-            <div id="accountMenu" class="account-menu oculto">
-                <a href="#">Mi cuenta</a>
-                <a href="#">Configuración</a>
-                <a href="#">Preferencias</a>
-                <a href="#">Notificaciones</a>
-                <hr>
-                <a href="#" class="logout">Cerrar sesión</a>
-            </div>
+        <div class="chat-input-container">
+            <input type="text" id="preguntaBot" placeholder="Escribe tu pregunta..." onkeypress="if(event.key==='Enter') preguntarBot()">
+            <button onclick="preguntarBot()" class="chat-send">Enviar</button>
         </div>
     </div>
-    </section>
 
     <!-- ================= DESTINOS ================= -->
     <main class="destinos" id="listaDestinos">

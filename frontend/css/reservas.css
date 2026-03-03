@@ -30,11 +30,13 @@
 
 /* Tarjeta del listado */
 .card-reserva {
-    background: white;
-    border-radius: 14px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    transition: transform 0.25s, box-shadow 0.25s;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.3);
 }
 
 .card-reserva:hover { transform: translateY(-6px); }
@@ -42,13 +44,13 @@
 .card-reserva img { width:100%; height:180px; object-fit:cover; display:block; }
 
 .reserva-info { padding: 18px; }
-.reserva-info h3 { margin:0 0 8px; color:#0a2540; font-size:1.1rem; }
-.reserva-info p { margin:4px 0; color:#555; font-size:0.95rem; }
+.reserva-info h3 { margin:0 0 8px; color:#f3f6f8; font-size:1.1rem; }
+.reserva-info p { margin:4px 0; color:#f7f3f3; font-size:0.95rem; }
 .precio { font-size:20px; font-weight:700; color:#1b6ca8; margin-top:8px; }
 
 .btn-reserva { margin-top:12px; width:100%; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:600; background:linear-gradient(90deg,#1b6ca8,#1abc9c); color:white; }
-.btn-reserva.cancelar { background:#ff4d4f; }
-.btn-reserva.cancelar:hover { background:#e43c3e; }
+.btn-reserva.cancelar { background:#1e88e5; }
+.btn-reserva.cancelar:hover { background:#5497d3; }
 
 .btn-volver { display:inline-block; margin:20px; text-decoration:none; color:#3DDAD7; font-weight:500; }
 .btn-volver:hover { color:#1b6ca8; }
@@ -66,7 +68,6 @@
     max-width: 920px;
     width: 100%;
     background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(8px);
     padding: 18px;
     border-radius: 12px;
     overflow: auto;
