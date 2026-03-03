@@ -183,26 +183,47 @@ function mostrarDestinos(lista) {
 }
 
 /* =========================
-   BUSCADOR GENERAL (Esto permite filtrar destinos por texto libre y por país, combinando ambos criterios)
+   BUSCADOR GENERAL (Filtra destinos por texto libre; incluye nombre, descripción, categoría y país)
 ========================= */
 function buscarDestinos() {
-    const texto = document.getElementById("buscarDestino").value.toLowerCase();
-    const pais = document.getElementById("buscarPais").value.toLowerCase();
+    const texto = document.getElementById("buscar").value.toLowerCase();
 
     const filtrados = destinos.filter(d => {
-        const coincideTexto =
+        // buscamos en nombre, descripción, categoría y país
+        return (
             d.nombre.toLowerCase().includes(texto) ||
             d.descripcion.toLowerCase().includes(texto) ||
-            d.categoria.toLowerCase().includes(texto);
-
-        const coincidePais =
-            pais === "" || d.pais.toLowerCase().includes(pais);
-
-        return coincideTexto && coincidePais;
+            d.categoria.toLowerCase().includes(texto) ||
+            d.pais.toLowerCase().includes(texto)
+        );
     });
 
     mostrarDestinos(filtrados);
 }
+
+    const buscarInput = document.getElementById('buscar');
+    const buscarBtn = document.querySelector('.icon-buscar-btn');
+
+    function attachSearchListeners() {
+        if (buscarInput) {
+            // Permitir buscar al presionar Enter
+            buscarInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    // Si el botón de buscar existe, simular click; si no, llamar directamente a la función de búsqueda
+                    if (buscarBtn) {
+                        buscarBtn.click();
+                    } else {
+                        buscarDestinos();
+                    }
+                }
+            });
+        }
+        if (buscarBtn) {
+            buscarBtn.addEventListener('click', buscarDestinos);
+        }
+    }
+
+    attachSearchListeners();
 
 /* =========================
    DETALLE DESTINO (Mostrar información completa al hacer clic en una tarjeta)
@@ -398,6 +419,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
 
     // Manejar el envío del formulario
     if (formularioPago) {
