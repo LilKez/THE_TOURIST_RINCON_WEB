@@ -2,9 +2,25 @@
    USUARIO ACTUAL (Simulación de estado de autenticación y rol para controlar acceso a funciones como reservar)
 ================================ */
 let usuarioActual = {
-    autenticado: false,
+    autenticado: false, // true si el usuario ha iniciado sesión, false si es un visitante
     rol: "visitante" // visitante | usuario | admin
 };
+
+let destinoActual = null; // Para guardar el destino seleccionado
+
+// Crear usuario admin por defecto si no existe
+let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+if (!usuarios.find(u => u.email === 'admin@admin.com')) {
+    usuarios.push({ nombre: 'Admin', apellido: 'Admin', email: 'admin@admin.com', password: 'admin123' });
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+}
+
+// Verificar si hay token para mantener sesión
+const token = localStorage.getItem('token');
+if (token) {
+    usuarioActual.autenticado = true;
+    usuarioActual.rol = localStorage.getItem('rol') || 'usuario';
+}
 
 /* =========================
    LOGIN OBLIGATORIO
@@ -153,11 +169,23 @@ const destinos = [
 }
 ];
 
+// Cargar destinos desde localStorage si existen (sincronizado con admin)
+if (localStorage.getItem('destinosAdmin')) {
+    const destinosAdmin = JSON.parse(localStorage.getItem('destinosAdmin'));
+    // Reemplazar el array
+    destinos.splice(0, destinos.length, ...destinosAdmin);
+}
+
 /* =========================
    RENDER DESTINOS (Esto es para mostrar las tarjetas de destinos al cargar la página o al filtrar)
 ========================= */
 function mostrarDestinos(lista) {
+    console.log('mostrarDestinos called with', lista.length, 'destinos');
     const contenedor = document.getElementById("listaDestinos");
+    if (!contenedor) {
+        console.error('Contenedor listaDestinos no encontrado');
+        return;
+    }
     contenedor.innerHTML = "";
 
     if (lista.length === 0) {
@@ -183,33 +211,61 @@ function mostrarDestinos(lista) {
 }
 
 /* =========================
-   BUSCADOR GENERAL (Esto permite filtrar destinos por texto libre y por país, combinando ambos criterios)
+   BUSCADOR GENERAL (Filtra destinos por texto libre; incluye nombre, descripción, categoría y país)
 ========================= */
 function buscarDestinos() {
-    const texto = document.getElementById("buscarDestino").value.toLowerCase();
-    const pais = document.getElementById("buscarPais").value.toLowerCase();
+    const texto = document.getElementById("buscar").value.toLowerCase();
 
     const filtrados = destinos.filter(d => {
-        const coincideTexto =
+        // buscamos en nombre, descripción, categoría y país
+        return (
             d.nombre.toLowerCase().includes(texto) ||
             d.descripcion.toLowerCase().includes(texto) ||
-            d.categoria.toLowerCase().includes(texto);
-
-        const coincidePais =
-            pais === "" || d.pais.toLowerCase().includes(pais);
-
-        return coincideTexto && coincidePais;
+            d.categoria.toLowerCase().includes(texto) ||
+            d.pais.toLowerCase().includes(texto)
+        );
     });
 
     mostrarDestinos(filtrados);
 }
 
+    const buscarInput = document.getElementById('buscar');
+    const buscarBtn = document.querySelector('.icon-buscar-btn');
+
+    function attachSearchListeners() {
+        if (buscarInput) {
+            // Permitir buscar al presionar Enter
+            buscarInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    // Si el botón de buscar existe, simular click; si no, llamar directamente a la función de búsqueda
+                    if (buscarBtn) {
+                        buscarBtn.click();
+                    } else {
+                        buscarDestinos();
+                    }
+                }
+            });
+        }
+        if (buscarBtn) {
+            buscarBtn.addEventListener('click', buscarDestinos);
+        }
+    }
+
+    attachSearchListeners();
+
 /* =========================
    DETALLE DESTINO (Mostrar información completa al hacer clic en una tarjeta)
 ========================= */
 function verDetalle(id) {
+    console.log('verDetalle called with id:', id);
     const destino = destinos.find(d => d.id === id);
-    if (!destino) return;
+    if (!destino) {
+        console.error('Destino no encontrado para id:', id);
+        return;
+    }
+
+    destinoActual = destino; // Guardar el destino actual
+    console.log('Destino actual:', destino.nombre);
 
     // Imagen principal
     document.getElementById("detalleImagen").src = destino.imagenes[1];
@@ -231,6 +287,7 @@ function verDetalle(id) {
     document.getElementById("detallePrecio").textContent = destino.precio.toLocaleString();
 
     document.getElementById("detalleDestino").classList.remove("oculto");
+    console.log('Detalle abierto para:', destino.nombre);
 }
 
 /* =========================
@@ -269,18 +326,66 @@ function cerrarModal() {
 /* =========================
    INIT (esto es para mostrar todo al cargar la página)
 ========================= */
-mostrarDestinos(destinos);
 
 /* =========================
     RESERVAR DESTINO
+    La funcion de la ventana de reserva, que se abre al hacer click en el botón de reservar dentro del detalle del destino.
 ========================= */
 function reservarDestino() {
+    console.log('reservarDestino called', {
+        autenticado: usuarioActual.autenticado,
+        destinoActual
+    });
+
     if (!usuarioActual.autenticado) {
+        console.log('usuario no autenticado, abriendo modal de login');
+
+        const modal = document.getElementById('modalLoginReq');
+        if (modal) {
+            const titulo = modal.querySelector('h2');
+            const mensaje = modal.querySelector('p');
+            if (titulo) titulo.textContent = 'Inicia sesión o regístrate';
+            if (mensaje) mensaje.textContent = 'Debes iniciar sesión o registrarte antes de reservar este destino.';
+        }
+
         abrirLoginReq();
         return;
     }
 
-    alert("Reserva realizada con éxito ✈️");
+    if (!destinoActual) {
+        const nombreDetalle = document.getElementById('detalleNombre')?.textContent?.trim();
+        if (nombreDetalle) {
+            destinoActual = destinos.find(d => d.nombre === nombreDetalle || d.id === nombreDetalle.toLowerCase().replace(/\s+/g, '-')) || null;
+            if (destinoActual) {
+                console.log('destinoActual recuperado desde detalle:', destinoActual.nombre);
+            }
+        }
+    }
+
+    if (!destinoActual) {
+        console.warn('No hay destino seleccionado; no se puede reservar');
+        alert('Selecciona un destino antes de reservar.');
+        return;
+    }
+
+    const modalReserva = document.getElementById('modalReserva');
+    if (!modalReserva) {
+        console.error('No se encontró modalReserva en la página');
+        alert('Error: no se puede abrir el modal de reserva. Revisa la consola.');
+        return;
+    }
+
+    console.log('Abriendo modal de reserva para', destinoActual.nombre);
+    const destinoNombre = destinoActual.nombre;
+    document.getElementById('reservaDestinoNombre').textContent = destinoNombre;
+    modalReserva.classList.remove('oculto');
+
+    // Cerrar el detalle del destino
+    cerrarDetalle();
+}
+
+function cerrarModalReserva() {
+    document.getElementById('modalReserva').classList.add('oculto');
 }
 
 
@@ -340,8 +445,12 @@ function preguntarBot() {
    MODAL LOGIN (Ventana emergente para requerir login al intentar reservar)
 ========================= */
 function abrirLoginReq() {
+    console.log('abrirLoginReq called');
     const modal = document.getElementById("modalLoginReq");
-    if (!modal) return;
+    if (!modal) {
+        console.error('Modal modalLoginReq no encontrado');
+        return;
+    }
     modal.classList.remove("oculto");
     // bloquear scroll usando clase (evita estilos inline)
     document.body.classList.add('no-scroll');
@@ -399,6 +508,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+
     // Manejar el envío del formulario
     if (formularioPago) {
         formularioPago.addEventListener('submit', function(e) {
@@ -435,6 +545,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Cerrar sesión: limpiar token y actualizar estado
 function cerrarSesion() {
     localStorage.removeItem('token');
+    localStorage.removeItem('rol');
     usuarioActual.autenticado = false;
     usuarioActual.rol = 'visitante';
     alert('Sesión cerrada');
@@ -443,6 +554,7 @@ function cerrarSesion() {
 
 // Detectar token al cargar y ajustar el botón de cuenta (login / logout)
 document.addEventListener('DOMContentLoaded', function() {
+
     const token = localStorage.getItem('token');
     const btn = document.getElementById('accountBtn');
     const menu = document.getElementById('accountMenu');
@@ -453,29 +565,54 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.parentNode.replaceChild(newBtn, btn);
     const accountButton = document.getElementById('accountBtn');
 
+    // Siempre añadir listener para toggle menú
+    accountButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (menu) menu.classList.toggle('oculto');
+    });
+
+    // Ajustar menú basado en autenticación
     if (token) {
         usuarioActual.autenticado = true;
-        usuarioActual.rol = 'usuario';
+        usuarioActual.rol = localStorage.getItem('rol') || 'usuario';
         accountButton.title = 'Mi cuenta';
-
-        // Al hacer click, mostrar/ocultar el menú de cuenta
-        accountButton.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (menu) menu.classList.toggle('oculto');
-        });
-
-        // Enlace de logout dentro del menú
-        const logoutLink = document.querySelector('#accountMenu .logout');
+        let menuHTML = `
+            <a href="#">Mi cuenta</a>
+            <a href="#">Configuración</a>
+            <a href="#">Preferencias</a>
+            <a href="#">Notificaciones</a>
+            <hr>
+            <a href="#" class="logout">Cerrar sesión</a>
+        `;
+        if (usuarioActual.rol === 'admin') {
+            menuHTML = `
+                <a href="admin/admin.html">Panel Admin</a>
+                <a href="#">Mi cuenta</a>
+                <a href="#">Configuración</a>
+                <a href="#">Preferencias</a>
+                <a href="#">Notificaciones</a>
+                <hr>
+                <a href="#" class="logout">Cerrar sesión</a>
+            `;
+        }
+        menu.innerHTML = menuHTML;
+        // Enlace de logout
+        const logoutLink = menu.querySelector('.logout');
         if (logoutLink) {
             logoutLink.addEventListener('click', function(ev) {
                 ev.preventDefault();
-                if (menu) menu.classList.add('oculto');
+                menu.classList.add('oculto');
                 cerrarSesion();
             });
         }
     } else {
+        usuarioActual.autenticado = false;
+        usuarioActual.rol = 'visitante';
         accountButton.title = 'Iniciar sesión';
-        accountButton.addEventListener('click', function() { window.location.href = 'login.html'; });
+        menu.innerHTML = `
+            <a href="login.html">Iniciar sesión</a>
+            <a href="registro.html">Registrarse</a>
+        `;
     }
 
     // Cerrar el menú si se hace click fuera
@@ -536,7 +673,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-    // Handlers para formularios de registro y login (comunican con el backend)
+    // Handlers para formularios de registro y login (simulación local)
     document.addEventListener('DOMContentLoaded', function() {
         const registroForm = document.getElementById('registroForm');
         if (registroForm) {
@@ -544,26 +681,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault();
                 const nombre = document.getElementById('nombre')?.value?.trim();
                 const apellido = document.getElementById('apellido')?.value?.trim();
-                const email = document.getElementById('email')?.value?.trim();
+                const emailRaw = document.getElementById('email')?.value?.trim();
+                const email = emailRaw ? emailRaw.toLowerCase() : '';
                 const password = document.getElementById('password')?.value;
 
-                try {
-                    const res = await fetch('/registrar', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username: email, password })
-                    });
-                    const data = await res.json();
-                    if (!res.ok) {
-                        alert(data.error || data.message || 'Error en el registro');
-                        return;
-                    }
-                    alert('Registro exitoso. Serás redirigido al login.');
-                    window.location.href = 'login.html';
-                } catch (err) {
-                    console.error('Error registrando:', err);
-                    alert('No se pudo conectar con el servidor. Intenta más tarde.');
+                if (!email || !password) {
+                    alert('Por favor, completa todos los campos.');
+                    return;
                 }
+
+                // Simular registro local (normalizar correo)
+                let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+                if (usuarios.find(u => u.email.toLowerCase() === email)) {
+                    alert('El usuario ya existe.');
+                    return;
+                }
+                usuarios.push({ nombre, apellido, email, password });
+                localStorage.setItem('usuarios', JSON.stringify(usuarios));
+                alert('Registro exitoso. Serás redirigido al login.');
+                window.location.href = 'login.html';
             });
         }
 
@@ -571,54 +707,120 @@ document.addEventListener('DOMContentLoaded', function() {
         if (loginForm) {
             loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                const email = document.getElementById('email')?.value?.trim();
+                const emailRaw = document.getElementById('email')?.value?.trim();
+                const email = emailRaw ? emailRaw.toLowerCase() : '';
                 const password = document.getElementById('password')?.value;
 
-                try {
-                    const res = await fetch('/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username: email, password })
-                    });
-                    const data = await res.json();
-                    if (!res.ok) {
-                        alert(data.error || 'Credenciales inválidas');
-                        return;
-                    }
-                    // Guardar token y estado de usuario
-                    if (data.token) localStorage.setItem('token', data.token);
-                    usuarioActual.autenticado = true;
-                    usuarioActual.rol = 'usuario';
-                    alert('Inicio de sesión exitoso');
+                if (!email || !password) {
+                    alert('Por favor, completa todos los campos.');
+                    return;
+                }
+
+                // Simular login local (normalizar correo)
+                let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+                const user = usuarios.find(u => u.email.toLowerCase() === email && u.password === password);
+                if (!user) {
+                    alert('Credenciales inválidas');
+                    return;
+                }
+                // Generar token falso
+                const token = 'fake-token-' + Date.now();
+                localStorage.setItem('token', token);
+                usuarioActual.autenticado = true;
+                usuarioActual.rol = (email === 'admin@admin.com') ? 'admin' : 'usuario';
+                localStorage.setItem('rol', usuarioActual.rol);
+                // Redirigir dependiendo del rol
+                if (usuarioActual.rol === 'admin') {
+                    window.location.href = 'admin/admin.html';
+                } else {
                     window.location.href = 'index.html';
-                } catch (err) {
-                    console.error('Error login:', err);
-                    alert('No se pudo conectar con el servidor. Intenta más tarde.');
                 }
             });
         }
+
+        const loginModalForm = document.getElementById('loginModalForm');
+        if (loginModalForm) {
+            loginModalForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const emailRaw = document.getElementById('modalEmail')?.value?.trim();
+                const email = emailRaw ? emailRaw.toLowerCase() : '';
+                const password = document.getElementById('modalPassword')?.value;
+
+                if (!email || !password) {
+                    alert('Por favor, completa todos los campos.');
+                    return;
+                }
+
+                // Simular login local (normalizar correo)
+                let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+                const user = usuarios.find(u => u.email.toLowerCase() === email && u.password === password);
+                if (!user) {
+                    alert('Credenciales inválidas');
+                    return;
+                }
+                // Generar token falso
+                const token = 'fake-token-' + Date.now();
+                localStorage.setItem('token', token);
+                usuarioActual.autenticado = true;
+                usuarioActual.rol = (email === 'admin@admin.com') ? 'admin' : 'usuario';
+                localStorage.setItem('rol', usuarioActual.rol);
+                // Cerrar modal y continuar
+                cerrarLoginReq();
+                // Ahora que está autenticado, abrir el modal de reserva
+                reservarDestino();
+            });
+        }
+
+        const pagoForm = document.querySelector('.formulario-pago');
+        if (pagoForm) {
+            pagoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Pago confirmado. ¡Disfruta tu viaje!');
+                window.location.href = 'reservas.html';
+            });
+        }
+
+        const formReserva = document.getElementById('formReserva');
+        if (formReserva) {
+            formReserva.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const fecha = document.getElementById('reservaFecha').value;
+                const personas = document.getElementById('reservaPersonas').value;
+                const notas = document.getElementById('reservaNotas').value;
+                const destino = document.getElementById('reservaDestinoNombre').textContent;
+
+                // Guardar reserva
+                const reservas = JSON.parse(localStorage.getItem('reservas') || '[]');
+                const reserva = {
+                    destino,
+                    fecha,
+                    personas,
+                    notas,
+                    usuario: 'Usuario actual',
+                    fechaReserva: new Date().toISOString()
+                };
+                reservas.push(reserva);
+                localStorage.setItem('reservas', JSON.stringify(reservas));
+
+                alert('Reserva realizada con éxito ✈️');
+                cerrarModalReserva();
+                cerrarDetalle(); // Cerrar detalle del destino
+            });
+        }
+
+        // Mostrar destinos al cargar
+        mostrarDestinos(destinos);
+
+        // Aseguramos que el botón de reservar reaccione aunque haya cambios en el DOM
+        const botonReserva = document.querySelector('button.reservar');
+        if (botonReserva) {
+            botonReserva.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('click event en boton.reservar (DOM load)');
+                reservarDestino();
+            });
+            console.log('Listener agregado a button.reservar');
+        } else {
+            console.warn('No se encontró button.reservar durante el DOMContentLoaded');
+        }
     });
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-    const accountBtn = document.getElementById("accountBtn");
-    const accountMenu = document.getElementById("accountMenu");
-    const logoutBtn = document.querySelector(".logout");
-
-    //  Abrir / cerrar menú
-    if (accountBtn && accountMenu) {
-        accountBtn.addEventListener("click", () => {
-            accountMenu.classList.toggle("oculto");
-        });
-    }
-
-    // Cerrar sesión
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            localStorage.removeItem("token");
-            window.location.href = "login.html";
-        });
-    }
-
-});

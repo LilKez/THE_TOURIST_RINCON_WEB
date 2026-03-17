@@ -45,7 +45,7 @@
 
 .modal-reservar-contenido {
     background: #0e1114;
-    color: #e6eef8;
+    color: #080808;
     padding: 26px;
     border-radius: 14px;
     width: 92%;
@@ -59,7 +59,7 @@
 
 .modal-reservar .modal-login-botones { display:flex; gap:12px; justify-content: center; margin-top: 10px; }
 .modal-reservar .btn-login, .modal-reservar .btn-registro {
-    padding: 10px 16px; border-radius: 12px; cursor: pointer; font-weight:700; color:white; border:none;
+    padding: 10px 16px; border-radius: 12px; cursor: pointer; font-weight:700; color:#1e88e5; border:none;
 }
 .modal-reservar .btn-login { background: linear-gradient(135deg,#00b3b3,#008080); }
 .modal-reservar .btn-registro { background: transparent; border: 2px solid #1e88e5; color: #1e88e5; }

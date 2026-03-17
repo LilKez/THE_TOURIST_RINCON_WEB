@@ -16,7 +16,7 @@
     display: flex;
     gap: 22px;
     z-index: 9999;
-    box-shadow: 0 12px 40px rgba(2,6,23,0.8);
+    box-shadow: 0 12px 40px rgba(241, 241, 243, 0.8);
     color: #e5e7eb;
 }
 
@@ -74,7 +74,7 @@
 .miniaturas img:hover,
 .miniaturas img.active {
     transform: scale(1.05);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    box-shadow: 0 6px 18px rgba(206, 188, 188, 0.45);
     border-color: rgba(255,255,255,0.08);
 }
 
@@ -97,7 +97,7 @@
 .destino-resumen {
     display: flex;
     gap: 12px;
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.02);
     padding: 10px;
     border-radius: 10px;
     margin-bottom: 10px;
@@ -194,6 +194,7 @@
 
 /* Overlay para modal si se usa */
 .modal-detalle {
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     background: rgba(0, 0, 0, 0.6);
 }
@@ -235,13 +236,14 @@
 /* ============================= */
 
 .modal-login {
-    display: none; /* Se activa con JS */
+    display: flex; /* Mostrar con .modal-reservar/JS. Oculto se controla con la clase .oculto */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.65);
+    -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
     justify-content: center;
     align-items: center;
@@ -269,7 +271,7 @@
 /* Texto */
 .modal-contenido p {
     margin-bottom: 20px;
-    color: #444;
+    color: #ece4e4;
 }
 
 /* Botones */

@@ -20,58 +20,73 @@
 
     <!-- ================= HEADER ================= -->
     <header>
-        <div class="header-brand">
-            <img src="img/Logo.png" alt="Logo THE TOURIST RINCÓN" class="logo">
-            <h1>THE TOURIST RINCÓN</h1>
-        </div>
-        <p>Destinos Turísticos Viaja, descubre y planifica tu próxima aventura</p>
+         <nav class="main-nav">
+        <div class="nav-container">
+            <div class="header-brand">
+                <img src="img/Logo.png" alt="Logo THE TOURIST RINCÓN" class="logo">
+                <div class="logo-text">
+                    <h1>THE TOURIST RINCÓN</h1>
+                    <span>Viaja, descubre y planifica</span>
+                </div>
+            </div>
 
-    </header>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="reservas.html">Reservas</a></li>
+                <li><a href="historial.html">Historial</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+
+            <div class="nav-user">
+                <div class="account-container">
+                    <button id="accountBtn" class="btn-login-modern">
+                        <i class="fa-solid fa-user"></i> Usuario
+                    </button>
+                    <!-- Mantenemos tu menú desplegable original -->
+                    <div id="accountMenu" class="account-menu oculto">
+                        <a href="#">Mi cuenta</a>                
+                        <a href="#">Configuración</a>
+                        <hr>
+                        <a href="#" class="logout">Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= HERO (Sirve como banner principal) ================= -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h2 class="hero-title">Destinos Turísticos</h2>
+            <p class="hero-subtitle">Viaja, descubre y planifica tu próxima aventura</p>
+
+            <div class="search-bar-container">
+                <div class="search-glass-wrapper">
+                    <input type="text" id="buscar" placeholder="Buscar destino, país o categoría...">
+                </div>
+                <!-- Botón del bot integrado -->
+                <button class="hero-bot-btn" onclick="abrirBot()">
+                    <i class="fa-solid fa-robot"></i> Pregúntale al bot
+                </button>
+            </div>
+        </div>
+    </section>
+    </header>    
 
     <!-- ================= CHAT BOT ================= -->
     <div id="chatBot" class="chat-bot oculto">
         <div class="chat-header">
-            <span>🤖 Asistente Turístico</span>
-            <button class="chat-close" onclick="cerrarBot()" aria-label="Cerrar chat" title="Cerrar chat">✕</button>
+            <h3>Asistente Turístico</h3>
+            <button onclick="cerrarBot()" class="chat-close">✕</button>
         </div>
-        <div class="chat-body" id="chatMensajes">
-            <div class="mensaje-bot">¡Hola! 👋 Soy tu asistente turístico. ¿En qué puedo ayudarte?</div>
+        <div id="chatMensajes" class="chat-mensajes">
+            <div class="mensaje-bot">¡Hola! Soy tu asistente turístico. ¿Cómo puedo ayudarte? Pregúntame por destinos baratos, mejores ratings, playas, o más. 🌍</div>
         </div>
-        <div class="chat-input">
-            <input type="text" id="preguntaBot" placeholder="Escribe tu pregunta...">
-            <button onclick="preguntarBot()" title="Enviar pregunta" aria-label="Enviar pregunta">→</button>
-        </div>
-    </div>
-
-    <section class="buscador">
-
-    <div class="buscador-left">
-        <button class="bot-btn" onclick="abrirBot()">🤖 Pregúntale al bot</button>
-        <input type="text" id="buscarDestino" placeholder="Buscar destino...">
-        <input type="text" id="buscarPais" placeholder="País o ciudad">
-        <button class="icon-btn" title="Buscar" aria-label="Buscar">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-    </div>
-
-    <!-- ICONOS DERECHA -->
-    <div class="buscador-icons">
-        <div class="account-container">
-            <button id="accountBtn" class="icon-btn" title="Mi cuenta" aria-label="Mi cuenta">
-                <i class="fa-solid fa-user"></i>
-            </button>
-
-            <div id="accountMenu" class="account-menu oculto">
-                <a href="#">Mi cuenta</a>
-                <a href="#">Configuración</a>
-                <a href="#">Preferencias</a>
-                <a href="#">Notificaciones</a>
-                <hr>
-                <a href="#" class="logout">Cerrar sesión</a>
-            </div>
+        <div class="chat-input-container">
+            <input type="text" id="preguntaBot" placeholder="Escribe tu pregunta..." onkeypress="if(event.key==='Enter') preguntarBot()">
+            <button onclick="preguntarBot()" class="chat-send">Enviar</button>
         </div>
     </div>
-    </section>
 
     <!-- ================= DESTINOS ================= -->
     <main class="destinos" id="listaDestinos">
@@ -117,7 +132,7 @@
 
 
 
-            <button class="reservar" onclick="reservarDestino(),cerrarDetalle();">Reservar ahora</button>
+            <button type="button" class="reservar" onclick="reservarDestino();">Reservar ahora</button>
 
         </div>
     </section>
@@ -127,12 +142,23 @@
 <div id="modalLoginReq" class="modal-login modal-reservar oculto">
   <div class="modal-login-contenido">
     <h2>Inicio de sesión requerido</h2>
-    <p>Para reservar un viaje debes iniciar sesión o registrarte.</p>
+    <p>Para reservar un viaje debes iniciar sesión.</p>
 
-    <div class="modal-login-botones">
-      <a href="login.html" class="btn-login">Iniciar sesión</a>
-      <a href="registro.html" class="btn-registro">Registrarse</a>
-    </div>
+    <form id="loginModalForm">
+        <div class="campo">
+            <label for="modalEmail">Correo electrónico</label>
+            <input id="modalEmail" name="email" type="email" placeholder="tu@email.com" required>
+        </div>
+
+        <div class="campo">
+            <label for="modalPassword">Contraseña</label>
+            <input id="modalPassword" name="password" type="password" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn-auth">Ingresar</button>
+    </form>
+
+    <p class="auth-switch">¿No tienes cuenta? <a href="registro.html">Regístrate</a></p>
 
     <button class="cerrar-modal" onclick="cerrarLoginReq()">Cancelar</button>
   </div>
@@ -172,6 +198,20 @@
             <p>© 2026 Destinos Turísticos | Proyecto Académico</p>
         </div>
     </footer>
+
+    <!-- MODAL PARA RESERVA -->
+    <div id="modalReserva" class="modal oculto">
+        <div class="modal-content">
+            <h3>Reservar <span id="reservaDestinoNombre"></span></h3>
+            <form id="formReserva">
+                <label>Fecha de viaje: <input type="date" id="reservaFecha" required></label>
+                <label>Número de personas: <input type="number" id="reservaPersonas" min="1" max="10" required></label>
+                <label>Notas adicionales: <textarea id="reservaNotas"></textarea></label>
+                <button type="submit">Confirmar Reserva</button>
+                <button type="button" onclick="cerrarModalReserva()">Cancelar</button>
+            </form>
+        </div>
+    </div>
 
     <!-- JS -->
     <script src="js/app.js"></script>

@@ -1,121 +1,168 @@
 /* =====================================================
-/*   HEADER
+/*   NUEVA NAVBAR (REEMPLAZA AL ANTIGUO HEADER)
 ===================================================== */
-header {
-    text-align: center;
-    padding: 120px 20px 80px;
+.main-nav {
     background: linear-gradient(to bottom, #1e88e5, #26c6da);
-}
-
-header h1 {
-    font-size: 2.8rem;
-    letter-spacing: 2px;
-}
-
-header p {
-    margin-top: 12px;
-    font-size: 1.15rem;
-    opacity: 0.95;
-}
-
-/* Brand: logo + title */
-.header-brand {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-}
-
-.header-brand .logo {
-    width: 130px;
-    height: auto;
-    display: block;
-    border-radius: 20px;
-}
-
-/* =====================================================
-/*   BUSCADOR
-===================================================== */
-.buscador {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin: 40px 20px;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 20px;
-}
-
-.buscador-left {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    background: rgba(255,255,255,0.08);
-    padding: 10px 16px;
-    border-radius: 20px;
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    flex: 1;
-    min-width: 280px;
-    max-width: 600px;
-}
-
-.bot-btn {
-    background: rgba(0, 184, 212, 0.9);
+    padding: 15px 50px;
     color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 16px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    transition: 0.3s ease;
-}
-
-.bot-btn:hover {
-    background: rgba(0, 200, 230, 1);
-    transform: scale(1.05);
-}
-
-.buscador-left input {
-    padding: 10px 14px;
-    border-radius: 12px;
-    border: none;
-    outline: none;
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-    font-size: 0.9rem;
-    min-width: 140px;
-    flex: 1;
-}
-
-.buscador-left input::placeholder {
-    color: rgba(255,255,255,0.6);
-}
-
-.buscador-left input:focus {
-    background: rgba(255,255,255,0.25);
-    box-shadow: 0 0 8px rgba(0, 198, 218, 0.3);
-}
-
-.buscador-icons {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-.buscador-icons {
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 1000;
 }
 
-.icon-btn {
-    background: rgba(0, 184, 212, 0.9);
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 100px;
+    height: 50px;
+    border-radius: 10px;
+    object-fit: cover;
+    display: block;
+}
+
+.logo-box {
+    background: linear-gradient(135deg, #1e88e5, #26c6da);
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 20px;
+}
+
+.logo-text h1 {
+    font-size: 1.1rem;
+    margin: 0;
+    letter-spacing: 1px;
+    color: white;
+}
+
+.logo-text span {
+    font-size: 0.7rem;
+    color: #f5f7f8;
+    display: block;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color:#1e88e5;
+}
+
+.btn-login-modern {
+    background: #1e88e5;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s;
+}
+
+.btn-login-modern:hover {
+    background: #5ba1df;
+}
+
+/* =====================================================
+/*   NUEVA HERO SECTION (REEMPLAZA AL ANTIGUO BUSCADOR)
+===================================================== */
+.hero-section {
+    height: 230px;
+    background: linear-gradient(to bottom, #1e88e5, #26c6da);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* El patrón de puntos de fondo */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 35px 35px;
+}
+
+.hero-title {
+    font-size: 4rem;
+    color: #ffffff;
+    margin: 0;
+    font-weight: 800;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hero-subtitle {
+    color: #ffffff;
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    opacity: 1;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    font-weight: 500;
+}
+
+.search-bar-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+}
+
+.search-glass-wrapper {
+    background: rgba(255, 255, 255, 0.15);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    width: 450px;
+}
+
+.search-glass-wrapper input {
+    background: transparent;
+    border: none;
+    padding: 15px 20px;
+    width: 100%;
+    color: #ffffff;
+    outline: none;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.search-glass-wrapper input::placeholder {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
+}
+
+.icon-buscar-btn {
+    background: #1e88e5;
     border: none;
     width: 44px;
     height: 44px;
@@ -131,38 +178,84 @@ header p {
     justify-content: center;
 }
 
-.icon-btn:hover {
-    background: rgba(0, 200, 230, 1);
+.icon-buscar-btn:hover {
+    background: #1565c0;
+    transform: scale(1.15);
+}
+
+.hero-bot-btn {
+    background: #1e88e5;
+    border: none;
+    padding: 0 25px;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s;
+}
+
+.hero-bot-btn:hover {
+    background: #1565c0;
+    transform: translateY(-2px);
+}
+
+.bot-btn {
+    background: #1e88e5;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: 0.3s ease;
+}
+
+.bot-btn:hover {
+    background: #1565c0;
+    transform: scale(1.05);
+}
+
+.icon-cuenta-btn {
+    background: #1e88e5;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-cuenta-btn:hover {
+    background: #1565c0;
     transform: scale(1.15);
 }
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-    .buscador {
-        margin: 30px 10px;
-        gap: 12px;
-        flex-direction: column;
+    .hero-section {
+        height: auto;
+        padding: 40px 20px;
     }
 
-    .buscador-left {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .search-glass-wrapper {
         width: 100%;
-        max-width: none;
-        justify-content: center;
-    }
-
-    .buscador-left input {
-        min-width: 120px;
-    }
-
-    .bot-btn {
-        font-size: 0.8rem;
-        padding: 8px 12px;
-    }
-
-    .icon-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
+        max-width: 350px;
     }
 }
 
@@ -171,10 +264,10 @@ header p {
 ===================================================== */
 .destinos {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 25px;
-    padding: 30px;
-    max-width: 1200px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 50px 30px;
+    max-width: 1300px;
     margin: auto;
 }
 
@@ -182,45 +275,51 @@ header p {
 /*   CARD DESTINO
 ===================================================== */
 .card {
-    background: rgba(255,255,255,0.25); /* MÁS CLARO */
+    background: rgba(255,255,255,0.25);
     border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.3);
 }
 
 .card:hover {
-    transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 18px 40px rgba(38,198,218,0.4);
+    transform: translateY(-10px);
+    box-shadow: 0 18px 40px rgba(30, 136, 229, 0.3);
+    border-color: #1e88e5;
 }
 
 .card img {
     width: 100%;
-    height: 180px;
+    height: 190px;
     object-fit: cover;
 }
 
 .card .contenido {
-    padding: 18px;
+    padding: 20px;
+    color: #ffffff;
 }
 
 .card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 8px;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
     color: #1e88e5;
 }
 
 .card p {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     opacity: 0.95;
+    line-height: 1.4;
+    color: #ffffff;
 }
 
 .card .meta {
-    margin-top: 12px;
+    margin-top: 15px;
     display: flex;
     justify-content: space-between;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: bold;
     color: #26c6da;
 }
 
@@ -233,7 +332,7 @@ header p {
     left: 0;
     width: 100%;
     max-height: 70vh;
-    background: rgba(15,23,42,0.92);
+    background: rgba(227, 242, 253, 0.98);
     display: flex;
     z-index: 20;
     padding: 20px;
@@ -250,15 +349,16 @@ header p {
 }
 
 .detalle-info {
-    background: rgba(255,255,255,0.22); /* MÁS CLARO */
+    background: rgba(255,255,255,0.8);
     padding: 25px;
     width: 60%;
     margin-left: 20px;
     border-radius: 18px;
+    color: rgba;
 }
 
 .detalle-info h2 {
-    color: #26c6da;
+    color: #1e88e5;
 }
 
 .reservar {
@@ -269,10 +369,11 @@ header p {
     color: white;
     font-weight: bold;
     cursor: pointer;
+    transition: 0.3s;
 }
-/* el hover es para el efecto visual al pasar el mouse por encima del botón */
+
 .reservar:hover {
-    background: #26c6da;
+    background: #1565c0;
 }
 
 .detalle .cerrar {
@@ -280,7 +381,7 @@ header p {
     top: 15px;
     right: 20px;
     background: transparent;
-    color: white;
+    color: #1e88e5;
     font-size: 26px;
     border: none;
     cursor: pointer;
@@ -290,19 +391,21 @@ header p {
 .chat-bot {
     position: fixed;
     right: 20px;
-    bottom: 80px;
-    width: 320px;
-    background: rgba(17, 25, 40, 0.98);
-    color: white;
+    bottom: 30px;
+    width: 340px;
+    max-height: 500px;
+    background: rgba(255, 255, 255, 0.98);
+    color: #333;
     border-radius: 16px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
     display: flex;
     flex-direction: column;
-    z-index: 999;
+    z-index: 2000;
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(30, 136, 229, 0.2);
     animation: slideUp 0.3s ease;
+    overflow: hidden;
 }
 
 @keyframes slideUp {
@@ -317,14 +420,21 @@ header p {
 }
 
 .chat-header {
-    background: linear-gradient(135deg, #00b8d4, #00a8c4);
-    padding: 12px 16px;
+    background: linear-gradient(135deg, #1e88e5, #26c6da);
+    padding: 14px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-weight: bold;
-    font-size: 0.95rem;
+    font-size: 1rem;
     border-radius: 16px 16px 0 0;
+    color: white;
+    flex-shrink: 0;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 0.95rem;
 }
 
 .chat-close {
@@ -336,95 +446,104 @@ header p {
     padding: 4px 8px;
 }
 
-.chat-body {
+.chat-mensajes {
     padding: 12px 16px;
-    height: 240px;
+    height: 280px;
     overflow-y: auto;
     font-size: 0.9rem;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    color: #333;
+    flex: 1;
 }
 
-.chat-body::-webkit-scrollbar {
+.chat-mensajes::-webkit-scrollbar {
     width: 6px;
 }
 
-.chat-body::-webkit-scrollbar-track {
-    background: rgba(255,255,255,0.05);
+.chat-mensajes::-webkit-scrollbar-track {
+    background: rgba(30, 136, 229, 0.05);
     border-radius: 3px;
 }
 
-.chat-body::-webkit-scrollbar-thumb {
-    background: rgba(0, 184, 212, 0.5);
+.chat-mensajes::-webkit-scrollbar-thumb {
+    background: rgba(30, 136, 229, 0.4);
     border-radius: 3px;
 }
 
-.chat-body::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 184, 212, 0.8);
+.chat-mensajes::-webkit-scrollbar-thumb:hover {
+    background: rgba(30, 136, 229, 0.7);
 }
 
-.chat-input {
+.chat-input-container {
     display: flex;
     padding: 10px 12px;
-    gap: 6px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    gap: 8px;
+    border-top: 1px solid rgba(30, 136, 229, 0.1);
+    background: rgba(255,255,255,0.5);
+    flex-shrink: 0;
 }
 
-.chat-input input {
+.chat-input-container input {
     flex: 1;
-    padding: 8px 12px;
+    padding: 10px 12px;
     border-radius: 8px;
-    border: none;
-    background: rgba(255,255,255,0.1);
-    color: white;
+    border: 1px solid #ddd;
+    background: white;
+    color: #333;
     font-family: 'Poppins', sans-serif;
     font-size: 0.85rem;
     outline: none;
     transition: 0.2s ease;
 }
 
-.chat-input input::placeholder {
-    color: rgba(255,255,255,0.5);
+.chat-input-container input::placeholder {
+    color: #999;
+    font-size: 0.82rem;
 }
 
-.chat-input input:focus {
-    background: rgba(255,255,255,0.18);
-    box-shadow: 0 0 6px rgba(0, 184, 212, 0.3);
+.chat-input-container input:focus {
+    background: #f5f5f5;
+    border-color: #1e88e5;
+    box-shadow: 0 0 6px rgba(30, 136, 229, 0.3);
 }
 
-.chat-input button {
-    background: linear-gradient(135deg, #00b8d4, #00a8c4);
+.chat-send {
+    background: linear-gradient(135deg, #1e88e5, #26c6da);
     border: none;
     color: white;
-    padding: 8px 12px;
+    padding: 10px 16px;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 0.85rem;
     transition: 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-.chat-input button:hover {
-    background: linear-gradient(135deg, #00d4f0, #00c4e0);
+.chat-send:hover {
+    background: linear-gradient(to bottom, #1565c0, #26c6da);
     transform: scale(1.05);
 }
 
 .mensaje-bot {
-    background: rgba(0, 184, 212, 0.15);
+    background: rgba(30, 136, 229, 0.1);
     padding: 8px 12px;
     border-radius: 10px;
-    color: #a0f7ff;
-    border-left: 3px solid #00b8d4;
+    color: #0d47a1;
+    border-left: 3px solid #1e88e5;
     word-wrap: break-word;
 }
 
 .mensaje-user {
     text-align: right;
-    background: rgba(38, 198, 218, 0.2);
+    background: rgba(30, 136, 229, 0.15);
     padding: 8px 12px;
     border-radius: 10px;
-    color: #00ffed;
-    border-right: 3px solid #26c6da;
+    color: #1e88e5;
+    border-right: 3px solid #1e88e5;
     word-wrap: break-word;
 }
 
@@ -440,29 +559,31 @@ header p {
 
 .account-menu {
     position: absolute;
-    top: 45px;
+    top: 55px;
     right: 0;
-    width: 200px;
+    width: 190px;
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px 0;
+    z-index: 1100;
     display: flex;
     flex-direction: column;
-    padding: 10px 0;
-    z-index: 999;
-    animation: fadeIn 0.2s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .account-menu a {
-    padding: 10px 15px;
-    text-decoration: none;
+    padding: 10px 20px;
+    display: block;
     color: #333;
-    font-size: 14px;
+    text-decoration: none;
+    font-size: 0.9rem;
     transition: background 0.2s;
 }
 
 .account-menu a:hover {
-    background: #f2f2f2;
+    background: rgba(30, 136, 229, 0.1);
+    color: #1e88e5;
 }
 
 .account-menu hr {
@@ -472,12 +593,12 @@ header p {
 }
 
 .account-menu .logout {
-    color: #c0392b;
+    color: #ff6b6b;
     font-weight: 500;
 }
 
 .account-menu .logout:hover {
-    background: #fdecea;
+    background: rgba(244, 67, 54, 0.1);
 }
 
 @keyframes fadeIn {
@@ -489,4 +610,73 @@ header p {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Modal Reserva */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal-content {
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #93c5fd;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content label {
+    margin: 10px 0 5px;
+}
+
+.modal-content input,
+.modal-content textarea {
+    padding: 8px;
+    border: 1px solid rgba(148,163,184,0.45);
+    border-radius: 4px;
+    background: #152336;
+    color: #f8fafc;
+}
+
+.modal-content button {
+    margin: 10px 5px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-content button[type="submit"] {
+    background: #16a34a;
+    color: white;
+}
+.modal-content button[type="button"] {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.oculto {
+    display: none !important;
 }

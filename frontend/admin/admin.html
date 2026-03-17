@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración - THE TOURIST RINCÓN</title>
+    <link rel="icon" href="../img/Logo.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header class="main-nav">
+    <div class="nav-container">
+        <div class="header-brand">
+            <img src="../img/Logo.png" alt="Logo" class="logo">
+            <div class="logo-text">
+                <h1>Admin Panel</h1>
+                <span>THE TOURIST RINCÓN</span>
+            </div>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="../index.html">Inicio</a></li>
+        </ul>
+
+        <button class="btn-login-modern" onclick="cerrarSesion()">
+            Cerrar sesión
+        </button>
+    </div>
+</header>
+
+<main class="admin-panel">
+    <aside class="sidebar">
+        <h3>Menú Admin</h3>
+        <ul>
+            <li><a href="#" onclick="mostrarSeccion('destinos')">Gestionar Destinos</a></li>
+            <li><a href="#" onclick="mostrarSeccion('usuarios')">Gestionar Usuarios</a></li>
+            <li><a href="#" onclick="mostrarSeccion('reservas')">Ver Reservas</a></li>
+        </ul>
+    </aside>
+
+    <section class="content">
+        <div id="destinos" class="seccion activa">
+            <h2>Gestionar Destinos</h2>
+            <button onclick="abrirModalDestino()">Añadir Destino</button>
+            <div id="listaDestinosAdmin"></div>
+        </div>
+
+        <div id="usuarios" class="seccion">
+            <h2>Gestionar Usuarios</h2>
+            <div id="listaUsuarios"></div>
+        </div>
+
+        <div id="reservas" class="seccion">
+            <h2>Reservas</h2>
+            <div id="listaReservas"></div>
+        </div>
+    </section>
+</main>
+
+<div id="modalDestino" class="modal oculto">
+    <div class="modal-content">
+        <h3 id="modalTitle">Añadir Destino</h3>
+<form id="formDestino">
+    <input type="hidden" id="destinoId">
+
+    <div class="form-grid">
+        <div>
+            <label for="destinoNombre">Ciudad</label>
+            <input type="text" id="destinoNombre" title="Nombre de la ciudad" placeholder="Cartagena" required>
+        </div>
+
+        <div>
+            <label for="destinoPais">País</label>
+            <input type="text" id="destinoPais" title="País del destino" placeholder="Colombia" required>
+        </div>
+
+        <div>
+            <label for="destinoCategoria">Categoría</label>
+            <input type="text" id="destinoCategoria" title="Categoría de viaje" placeholder="Playa, ciudad, naturaleza" required>
+        </div>
+
+        <div>
+            <label for="destinoClima">Clima</label>
+            <input type="text" id="destinoClima" title="Clima del destino" placeholder="Cálido, templado, frío" required>
+        </div>
+
+        <div>
+            <label for="destinoPrecio">Precio</label>
+            <input type="number" id="destinoPrecio" title="Precio en COP" placeholder="1500000" min="0" required>
+        </div>
+
+        <div>
+            <label for="destinoRating">Puntuación</label>
+            <input type="number" step="0.1" id="destinoRating" title="Valoración del destino" placeholder="4.8" min="0" max="5" required>
+        </div>
+    </div>
+
+    <div>
+        <label for="destinoDescripcion">Descripción</label>
+        <textarea id="destinoDescripcion" title="Descripción del destino" placeholder="Breve descripción del destino" required></textarea>
+    </div>
+
+    <div class="form-buttons">
+        <button type="submit">Guardar</button>
+        <button type="button" onclick="cerrarModalDestino()">Cancelar</button>
+    </div>
+</form>
+    </div>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>
