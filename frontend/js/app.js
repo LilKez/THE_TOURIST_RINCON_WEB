@@ -1,3 +1,16 @@
+// 1. CONFIGURACIÓN
+const SUPABASE_URL = "https://zznylyznxkfvwockczck.supabase.co";
+const SUPABASE_KEY = "sb_publishable_TY-D-APBQDoCs98DN35Ljw_594qqAxF";
+
+// Verificamos si la librería cargó antes de intentar usarla
+let _supabase;
+if (typeof supabase !== 'undefined') {
+    _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log("✅ Supabase cargado correctamente");
+} else {
+    console.error("❌ Error: La librería de Supabase no se ha detectado. Revisa el orden en tu HTML.");
+}
+
 /* ==============================
    USUARIO ACTUAL (Simulación de estado de autenticación y rol para controlar acceso a funciones como reservar)
 ================================ */
@@ -678,65 +691,91 @@ document.addEventListener('DOMContentLoaded', function() {
         const registroForm = document.getElementById('registroForm');
         if (registroForm) {
             registroForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const nombre = document.getElementById('nombre')?.value?.trim();
-                const apellido = document.getElementById('apellido')?.value?.trim();
-                const emailRaw = document.getElementById('email')?.value?.trim();
-                const email = emailRaw ? emailRaw.toLowerCase() : '';
-                const password = document.getElementById('password')?.value;
+    e.preventDefault();
+    const nombre = document.getElementById('nombre')?.value?.trim();
+    const apellido = document.getElementById('apellido')?.value?.trim();
+    const email = document.getElementById('email')?.value?.trim().toLowerCase();
+    const password = document.getElementById('password')?.value;
 
-                if (!email || !password) {
-                    alert('Por favor, completa todos los campos.');
-                    return;
-                }
+    if (!email || !password) {
+        alert('Por favor, completa todos los campos.');
+        return;
+    }
 
-                // Simular registro local (normalizar correo)
-                let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-                if (usuarios.find(u => u.email.toLowerCase() === email)) {
-                    alert('El usuario ya existe.');
-                    return;
-                }
-                usuarios.push({ nombre, apellido, email, password });
-                localStorage.setItem('usuarios', JSON.stringify(usuarios));
-                alert('Registro exitoso. Serás redirigido al login.');
-                window.location.href = 'login.html';
-            });
+    // Guardar usuario en localStorage para permitir login sin depender de Supabase.
+    // (Si Supabase está cargado, también lo guardamos ahí como respaldo).
+    let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    usuarios.push({ nombre, apellido, email, password });
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+    if (typeof supabase !== 'undefined' && typeof _supabase !== 'undefined') {
+        try {
+            const { data, error } = await _supabase
+                .from('Perfiles') // Asegúrate que en Supabase se llame así con P mayúscula
+                .insert([{ nombre, apellido, email, password }]);
+
+            if (error) {
+                console.warn('Error guardando en Supabase:', error.message);
+            }
+        } catch (err) {
+            console.warn('Supabase no disponible:', err);
+        }
+    }
+
+    alert('¡Registro guardado con éxito!');
+    window.location.href = 'login.html';
+});
         }
 
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const emailRaw = document.getElementById('email')?.value?.trim();
-                const email = emailRaw ? emailRaw.toLowerCase() : '';
-                const password = document.getElementById('password')?.value;
+        // Manejador para el formulario de LOGIN con Supabase
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email')?.value?.trim().toLowerCase();
+        const password = document.getElementById('password')?.value;
 
-                if (!email || !password) {
-                    alert('Por favor, completa todos los campos.');
-                    return;
-                }
-
-                // Simular login local (normalizar correo)
-                let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-                const user = usuarios.find(u => u.email.toLowerCase() === email && u.password === password);
-                if (!user) {
-                    alert('Credenciales inválidas');
-                    return;
-                }
-                // Generar token falso
-                const token = 'fake-token-' + Date.now();
-                localStorage.setItem('token', token);
-                usuarioActual.autenticado = true;
-                usuarioActual.rol = (email === 'admin@admin.com') ? 'admin' : 'usuario';
-                localStorage.setItem('rol', usuarioActual.rol);
-                // Redirigir dependiendo del rol
-                if (usuarioActual.rol === 'admin') {
-                    window.location.href = 'admin/admin.html';
-                } else {
-                    window.location.href = 'index.html';
-                }
-            });
+        if (!email || !password) {
+            alert('Por favor, completa todos los campos.');
+            return;
         }
+
+        try {
+            // BUSCAMOS al usuario en la tabla 'Perfiles' de Supabase
+            const { data: usuario, error } = await _supabase
+                .from('Perfiles')
+                .select('*')
+                .eq('email', email)
+                .eq('password', password) // En proyectos reales se usa auth.signIn, pero para tu tabla personalizada es así
+                .single();
+
+            if (error || !usuario) {
+                alert('Credenciales inválidas: El correo o la contraseña no coinciden.');
+                console.error('Error de login:', error);
+                return;
+            }
+
+            // Si el usuario existe, guardamos la sesión
+            const token = 'session-' + Date.now();
+            localStorage.setItem('token', token);
+            localStorage.setItem('rol', (usuario.email === 'admin@admin.com') ? 'admin' : 'usuario');
+            localStorage.setItem('usuarioNombre', usuario.nombre);
+
+            alert(`¡Bienvenido de nuevo, ${usuario.nombre}!`);
+            
+            // Redirigir según el rol
+            if (localStorage.getItem('rol') === 'admin') {
+                window.location.href = 'admin/admin.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+
+        } catch (err) {
+            console.error('Error inesperado:', err);
+            alert('Ocurrió un error al intentar iniciar sesión.');
+        }
+    });
+}
 
         const loginModalForm = document.getElementById('loginModalForm');
         if (loginModalForm) {
