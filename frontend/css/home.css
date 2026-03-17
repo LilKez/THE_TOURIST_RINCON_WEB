@@ -611,3 +611,72 @@
         transform: translateY(0);
     }
 }
+
+/* Modal Reserva */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal-content {
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #93c5fd;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content label {
+    margin: 10px 0 5px;
+}
+
+.modal-content input,
+.modal-content textarea {
+    padding: 8px;
+    border: 1px solid rgba(148,163,184,0.45);
+    border-radius: 4px;
+    background: #152336;
+    color: #f8fafc;
+}
+
+.modal-content button {
+    margin: 10px 5px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-content button[type="submit"] {
+    background: #16a34a;
+    color: white;
+}
+.modal-content button[type="button"] {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.oculto {
+    display: none !important;
+}

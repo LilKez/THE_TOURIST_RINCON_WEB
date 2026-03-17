@@ -236,7 +236,7 @@
 /* ============================= */
 
 .modal-login {
-    display: none; /* Se activa con JS */
+    display: flex; /* Mostrar con .modal-reservar/JS. Oculto se controla con la clase .oculto */
     position: fixed;
     top: 0;
     left: 0;

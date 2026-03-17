@@ -111,10 +111,20 @@ main, .destinos {
 .modal-reservar .modal-login-botones { display:flex; gap:12px; justify-content: center; margin-top: 10px; }
 .modal-reservar .btn-login, .modal-reservar .btn-registro {
     padding: 10px 16px; border-radius: 12px; cursor: pointer; font-weight:700; color:white; border:none;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
-.modal-reservar .btn-login { background: linear-gradient(135deg,#00b3b3,#008080); }
+.modal-reservar .btn-login {
+    background: linear-gradient(135deg,#00b3b3,#008080);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 4px 12px rgba(0,128,128,0.35);
+}
+.modal-reservar .btn-login:hover {
+    background: linear-gradient(135deg,#81e8e8,#b4ffff);
+    color: #0f172a;
+    transform: translateY(-1px);
+}
 .modal-reservar .btn-registro { background: transparent; border: 2px solid #1e88e5; color: #1e88e5; }
-.modal-reservar .btn-registro:hover { background: #1e88e5; color: white; }
+.modal-reservar .btn-registro:hover { background: #1e88e5; color: white; transform: translateY(-1px); }
 
 /* Pequeño aviso y enlace secundario (ej: continuar sin cuenta) */
 .modal-reservar .nota { font-size: 0.9rem; color: #9fb1c7; text-align:center; margin-top:12px; }
@@ -150,16 +160,22 @@ main, .destinos {
 }
 
 .btn-login {
-    background: #008080;
+    background: linear-gradient(135deg,#009a9a,#00c5c5);
     color: white;
     padding: 10px 18px;
     border-radius: 12px;
     text-decoration: none;
     font-weight: bold;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 4px 14px rgba(0, 128, 128, 0.35);
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-login:hover {
-    background: #00b3b3;
+    background: linear-gradient(135deg,#62d1d1,#a2f4f4);
+    color: #0f172a;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(0, 128, 128, 0.45);
 }
 
 .btn-registro {
