@@ -177,34 +177,27 @@ if (localStorage.getItem('destinosAdmin')) {
 }
 
 /* =========================
-   RENDER DESTINOS (Esto es para mostrar las tarjetas de destinos al cargar la página o al filtrar)
+   RENDER DESTINOS
 ========================= */
-function mostrarDestinos(lista) {
-    console.log('mostrarDestinos called with', lista.length, 'destinos');
-    const contenedor = document.getElementById("listaDestinos");
-    if (!contenedor) {
-        console.error('Contenedor listaDestinos no encontrado');
-        return;
-    }
+function renderDestinos(destinos) {
+    const contenedor = document.getElementById("listaDestinosAdmin");
     contenedor.innerHTML = "";
 
-    if (lista.length === 0) {
-        contenedor.innerHTML = `<p>No se encontraron destinos</p>`;
-        return;
-    }
+    destinos.forEach(destino => {
 
-    lista.forEach(destino => {
+        // ✅ FIX mínimo
+        const imagen = (destino.imagenes && destino.imagenes.length > 0)
+            ? destino.imagenes[0]
+            : "../img/default.jpg";
+
         contenedor.innerHTML += `
-            <div class="card" onclick="verDetalle('${destino.id}')">
-                <img src="${destino.imagenes[1]}" alt="${destino.nombre}">
-                <div class="contenido">
-                    <h3>${destino.nombre}</h3>
-                    <p>${destino.descripcion}</p>
-                    <div class="meta">
-                        <span>⭐ ${destino.rating}</span>
-                        <span>$ ${destino.precio.toLocaleString()}</span>
-                    </div>
-                </div>
+            <div class="destino-card">
+                <img src="${imagen}" onerror="this.src='../img/default.jpg'">
+                <h3>${destino.nombre}</h3>
+                <p>${destino.pais}</p>
+
+                <button>Editar</button>
+                <button>Eliminar</button>
             </div>
         `;
     });
@@ -254,7 +247,7 @@ function buscarDestinos() {
     attachSearchListeners();
 
 /* =========================
-   DETALLE DESTINO (Mostrar información completa al hacer clic en una tarjeta)
+   DETALLE DESTINO
 ========================= */
 function verDetalle(id) {
     console.log('verDetalle called with id:', id);
@@ -264,21 +257,25 @@ function verDetalle(id) {
         return;
     }
 
-    destinoActual = destino; // Guardar el destino actual
-    console.log('Destino actual:', destino.nombre);
+    destinoActual = destino;
 
-    // Imagen principal
-    document.getElementById("detalleImagen").src = destino.imagenes[1];
+    /*=========================== 
+    FIX mínimo (fix es para asegurar que si no hay imágenes, no rompa la página y muestre una imagen por defecto) 
+    =============================0*/
+    document.getElementById("detalleImagen").src =
+        destino.imagenes?.[0] || "../img/default.jpg";
 
-    // Miniaturas diferentes
-    document.getElementById("mini1").src = destino.imagenes[1] || destino.imagenes[0];
-    document.getElementById("mini2").src = destino.imagenes[2] || destino.imagenes[0];
-    document.getElementById("mini3").src = destino.imagenes[3] || destino.imagenes[0];
+    document.getElementById("mini1").src =
+        destino.imagenes?.[0] || "../img/default.jpg";
 
-    // Título overlay
+    document.getElementById("mini2").src =
+        destino.imagenes?.[1] || destino.imagenes?.[0] || "../img/default.jpg";
+
+    document.getElementById("mini3").src =
+        destino.imagenes?.[2] || destino.imagenes?.[0] || "../img/default.jpg";
+
     document.getElementById("detalleNombreOverlay").textContent = destino.nombre;
 
-    // Información
     document.getElementById("detalleNombre").textContent = destino.nombre;
     document.getElementById("detalleDescripcion").textContent = destino.descripcion;
     document.getElementById("detalleCategoria").textContent = destino.categoria;
@@ -287,7 +284,6 @@ function verDetalle(id) {
     document.getElementById("detallePrecio").textContent = destino.precio.toLocaleString();
 
     document.getElementById("detalleDestino").classList.remove("oculto");
-    console.log('Detalle abierto para:', destino.nombre);
 }
 
 /* =========================
@@ -323,40 +319,7 @@ function cerrarModal() {
 }
 
 
-/* =========================
-   INIT (esto es para mostrar todo al cargar la página)
-========================= */
 
-/* =========================
-    RESERVAR DESTINO
-    La funcion de la ventana de reserva, que se abre al hacer click en el botón de reservar dentro del detalle del destino.
-========================= */
-function reservarDestino() {
-    console.log('reservarDestino called', {
-        autenticado: usuarioActual.autenticado,
-        destinoActual
-    });
-
-    if (!usuarioActual.autenticado) {
-        console.log('usuario no autenticado, abriendo modal de login');
-
-        const modal = document.getElementById('modalLoginReq');
-        if (modal) {
-            const titulo = modal.querySelector('h2');
-            const mensaje = modal.querySelector('p');
-            if (titulo) titulo.textContent = 'Inicia sesión o regístrate';
-            if (mensaje) mensaje.textContent = 'Debes iniciar sesión o registrarte antes de reservar este destino.';
-        }
-
-        abrirLoginReq();
-        return;
-    }
-
-    if (!destinoActual) {
-        const nombreDetalle = document.getElementById('detalleNombre')?.textContent?.trim();
-        if (nombreDetalle) {
-            destinoActual = destinos.find(d => d.nombre === nombreDetalle || d.id === nombreDetalle.toLowerCase().replace(/\s+/g, '-')) || null;
-            if (destinoActual) {
                 console.log('destinoActual recuperado desde detalle:', destinoActual.nombre);
             }
         }
@@ -673,34 +636,45 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-    // Handlers para formularios de registro y login (simulación local)
+    
     document.addEventListener('DOMContentLoaded', function() {
         const registroForm = document.getElementById('registroForm');
         if (registroForm) {
             registroForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const nombre = document.getElementById('nombre')?.value?.trim();
-                const apellido = document.getElementById('apellido')?.value?.trim();
-                const emailRaw = document.getElementById('email')?.value?.trim();
-                const email = emailRaw ? emailRaw.toLowerCase() : '';
-                const password = document.getElementById('password')?.value;
+    e.preventDefault();
+    const nombre = document.getElementById('nombre')?.value?.trim();
+    const apellido = document.getElementById('apellido')?.value?.trim();
+    const email = document.getElementById('email')?.value?.trim().toLowerCase();
+    const password = document.getElementById('password')?.value;
 
-                if (!email || !password) {
-                    alert('Por favor, completa todos los campos.');
-                    return;
-                }
+    if (!email || !password) {
+        alert('Por favor, completa todos los campos.');
+        return;
+    }
 
-                // Simular registro local (normalizar correo)
-                let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-                if (usuarios.find(u => u.email.toLowerCase() === email)) {
-                    alert('El usuario ya existe.');
-                    return;
-                }
-                usuarios.push({ nombre, apellido, email, password });
-                localStorage.setItem('usuarios', JSON.stringify(usuarios));
-                alert('Registro exitoso. Serás redirigido al login.');
-                window.location.href = 'login.html';
-            });
+    // Guardar usuario en localStorage para permitir login sin depender de Supabase.
+    // (Si Supabase está cargado, también lo guardamos ahí como respaldo).
+    let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    usuarios.push({ nombre, apellido, email, password });
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+    if (typeof supabase !== 'undefined' && typeof _supabase !== 'undefined') {
+        try {
+            const { data, error } = await _supabase
+                .from('Perfiles') // Asegúrate que en Supabase se llame así con P mayúscula
+                .insert([{ nombre, apellido, email, password }]);
+
+            if (error) {
+                console.warn('Error guardando en Supabase:', error.message);
+            }
+        } catch (err) {
+            console.warn('Supabase no disponible:', err);
+        }
+    }
+
+    alert('¡Registro guardado con éxito!');
+    window.location.href = 'login.html';
+});
         }
 
         const loginForm = document.getElementById('loginForm');
@@ -716,27 +690,42 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                // Simular login local (normalizar correo)
-                let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-                const user = usuarios.find(u => u.email.toLowerCase() === email && u.password === password);
-                if (!user) {
-                    alert('Credenciales inválidas');
-                    return;
-                }
-                // Generar token falso
-                const token = 'fake-token-' + Date.now();
-                localStorage.setItem('token', token);
-                usuarioActual.autenticado = true;
-                usuarioActual.rol = (email === 'admin@admin.com') ? 'admin' : 'usuario';
-                localStorage.setItem('rol', usuarioActual.rol);
-                // Redirigir dependiendo del rol
-                if (usuarioActual.rol === 'admin') {
-                    window.location.href = 'admin/admin.html';
-                } else {
-                    window.location.href = 'index.html';
-                }
-            });
+        try {
+            // BUSCAMOS al usuario en la tabla 'Perfiles' de Supabase
+            const { data: usuario, error } = await _supabase
+                .from('Perfiles')
+                .select('*')
+                .eq('email', email)
+                .eq('password', password) // En proyectos reales se usa auth.signIn, pero para tu tabla personalizada es así
+                .single();
+
+            if (error || !usuario) {
+                alert('Credenciales inválidas: El correo o la contraseña no coinciden.');
+                console.error('Error de login:', error);
+                return;
+            }
+
+            // Si el usuario existe, guardamos la sesión
+            const token = 'session-' + Date.now();
+            localStorage.setItem('token', token);
+            localStorage.setItem('rol', (usuario.email === 'admin@admin.com') ? 'admin' : 'usuario');
+            localStorage.setItem('usuarioNombre', usuario.nombre);
+
+            alert(`¡Bienvenido de nuevo, ${usuario.nombre}!`);
+            
+            // Redirigir según el rol
+            if (localStorage.getItem('rol') === 'admin') {
+                window.location.href = 'admin/admin.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+
+        } catch (err) {
+            console.error('Error inesperado:', err);
+            alert('Ocurrió un error al intentar iniciar sesión.');
         }
+    });
+}
 
         const loginModalForm = document.getElementById('loginModalForm');
         if (loginModalForm) {
@@ -823,4 +812,21 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             console.warn('No se encontró button.reservar durante el DOMContentLoaded');
         }
-    });
+        // Función para bloquear fechas anteriores a hoy en el calendario
+function configurarFechaMinima() {
+    const fechaInput = document.getElementById('reservaFecha');
+    if (fechaInput) {
+        const hoy = new Date();
+        const yyyy = hoy.getFullYear();
+        let mm = hoy.getMonth() + 1; // Meses empiezan en 0
+        let dd = hoy.getDate();
+
+        if (mm < 10) mm = '0' + mm;
+        if (dd < 10) dd = '0' + dd;
+
+        const fechaMinima = `${yyyy}-${mm}-${dd}`;
+        fechaInput.setAttribute('min', fechaMinima);
+        console.log("📅 Límite de fecha establecido:", fechaMinima);
+    }
+    }
+});
