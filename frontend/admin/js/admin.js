@@ -1,22 +1,8 @@
-let destinos = [
-    {
-        id: "cartagena",
-        nombre: "Cartagena",
-        pais: "colombia",
-        categoria: "playa",
-        clima: "cálido",
-        precio: 1500000,
-        rating: 4.8,
-        imagenes: [],
-        descripcion: "Ciudad amurallada con playas caribeñas."
-    }
-];
+const API_URL = 'http://localhost:3000';
 
-if (localStorage.getItem('destinosAdmin')) {
-    destinos = JSON.parse(localStorage.getItem('destinosAdmin'));
-}
+let destinos = [];
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const token = localStorage.getItem('token');
     if (!token) {
         window.location.href = '../login.html';
@@ -25,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     mostrarSeccion('destinos');
     cargarDestinos();
-    cargarUsuarios();
+    cargarPerfiles();
     cargarReservas();
 });
 
@@ -34,26 +20,42 @@ function mostrarSeccion(seccion) {
     document.getElementById(seccion).classList.add('activa');
 }
 
-function cargarDestinos() {
+// DESTINOS DESDE SUPABASE
+async function cargarDestinos() {
     const lista = document.getElementById('listaDestinosAdmin');
-    lista.innerHTML = '';
+    lista.innerHTML = '<p>Cargando destinos...</p>';
 
-    destinos.forEach(destino => {
-        const card = document.createElement('div');
-        card.className = 'destino-card';
+    try {
+        const res = await fetch(`${API_URL}/destinos`);
+        const data = await res.json();
 
-        card.innerHTML = `
+        destinos = data;
+        lista.innerHTML = '';
+
+        destinos.forEach(destino => {
+            const card = document.createElement('div');
+            card.className = 'destino-card';
+
+            card.innerHTML = `
             <h3>${destino.nombre}</h3>
             <p>${destino.descripcion}</p>
-            <p>Precio: $${destino.precio.toLocaleString()}</p>
-            <button class="edit-btn" onclick="editarDestino('${destino.id}')">Editar</button>
-            <button class="delete-btn" onclick="eliminarDestino('${destino.id}')">Eliminar</button>
-        `;
+            <p>Precio: $${destino.precio}</p>
+            <div class="card-buttons">
+            <button class="edit-btn" onclick="editarDestino(${destino.id})">Editar</button>
+            <button class="delete-btn" onclick="eliminarDestino(${destino.id})">Eliminar</button>
+            </div>
+            `;
 
-        lista.appendChild(card);
-    });
+            lista.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error(error);
+        lista.innerHTML = '<p>Error cargando destinos</p>';
+    }
 }
 
+// MODAL DESTINO (VENTANA EMERGENTE PARA CREAR O EDITAR DESTINOS)
 function abrirModalDestino(id = null) {
     const modal = document.getElementById('modalDestino');
     const form = document.getElementById('formDestino');
@@ -87,86 +89,169 @@ function cerrarModalDestino() {
     document.getElementById('modalDestino').classList.add('oculto');
 }
 
-document.getElementById('formDestino').addEventListener('submit', function(e) {
+// GUARDAR (POST / PUT)
+document.getElementById('formDestino').addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const id = document.getElementById('destinoId').value;
-    const nombre = document.getElementById('destinoNombre').value;
-    const pais = document.getElementById('destinoPais').value;
-    const categoria = document.getElementById('destinoCategoria').value;
-    const clima = document.getElementById('destinoClima').value;
-    const precio = parseInt(document.getElementById('destinoPrecio').value);
-    const rating = parseFloat(document.getElementById('destinoRating').value);
-    const descripcion = document.getElementById('destinoDescripcion').value;
 
-    if (id) {
-        const index = destinos.findIndex(d => d.id === id);
+    const destinoData = {
+        nombre: document.getElementById('destinoNombre').value,
+        pais: document.getElementById('destinoPais').value,
+        categoria: document.getElementById('destinoCategoria').value,
+        clima: document.getElementById('destinoClima').value,
+        precio: parseInt(document.getElementById('destinoPrecio').value),
+        rating: parseFloat(document.getElementById('destinoRating').value),
+        descripcion: document.getElementById('destinoDescripcion').value
+    };
 
-        if (index !== -1) {
-            destinos[index] = {
-                ...destinos[index],
-                nombre,
-                pais,
-                categoria,
-                clima,
-                precio,
-                rating,
-                descripcion
-            };
+    try {
+        if (id) {
+            // EDITAR DESTINO
+            await fetch(`${API_URL}/destinos/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(destinoData)
+            });
+        } else {
+            // CREAR NUEVO DESTINO
+            await fetch(`${API_URL}/destinos`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(destinoData)
+            });
         }
-    } else {
-        const newId = nombre.toLowerCase().replace(/\s+/g, '-');
 
-        destinos.push({
-            id: newId,
-            nombre,
-            pais,
-            categoria,
-            clima,
-            precio,
-            rating,
-            descripcion,
-            imagenes: []
-        });
+        cargarDestinos();
+        cerrarModalDestino();
+
+    } catch (error) {
+        console.error(error);
     }
-
-    localStorage.setItem('destinosAdmin', JSON.stringify(destinos));
-    cargarDestinos();
-    cerrarModalDestino();
 });
 
 function editarDestino(id) {
     abrirModalDestino(id);
 }
 
-function eliminarDestino(id) {
+// ELIMINAR DESTINO
+async function eliminarDestino(id) {
     if (confirm('¿Eliminar este destino?')) {
-        destinos = destinos.filter(d => d.id !== id);
-        localStorage.setItem('destinosAdmin', JSON.stringify(destinos));
-        cargarDestinos();
+        try {
+            await fetch(`${API_URL}/destinos/${id}`, {
+                method: 'DELETE'
+            });
+
+            cargarDestinos();
+        } catch (error) {
+            console.error(error);
+        }
     }
 }
 
-function cargarUsuarios() {
+// PERFILES (USUARIOS)
+async function cargarPerfiles() {
     const lista = document.getElementById('listaUsuarios');
-    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    lista.innerHTML = '<p>Cargando usuarios...</p>';
 
-    lista.innerHTML =
-        '<h3>Usuarios registrados:</h3><ul>' +
-        usuarios.map(u => `<li>${u.nombre} ${u.apellido} - ${u.email}</li>`).join('') +
-        '</ul>';
+    try {
+        const res = await fetch(`${API_URL}/perfiles`);
+        const perfiles = await res.json();
+
+        lista.innerHTML =
+    '<h3>Usuarios registrados:</h3><div class="usuarios-grid">' +
+    perfiles.map(u => `
+        <div class="usuario-card">
+            <h3><i class="fa fa-user"></i> ${u.nombre} ${u.apellido}</h3>
+            <p><i class="fa fa-envelope"></i> ${u.email}</p>
+            <span class="rol ${u.rol}">${u.rol}</span>
+        </div>
+    `).join('') +
+    '</div>';
+
+    } catch (error) {
+        console.error(error);
+        lista.innerHTML = '<p>Error cargando usuarios</p>';
+    }
 }
 
-function cargarReservas() {
-    const lista = document.getElementById('listaReservas');
-    const reservas = JSON.parse(localStorage.getItem('reservas') || '[]');
+// RESERVAS (conectadas al backend)
+async function cargarReservas() {
+    const tbody = document.getElementById('listaReservas');
+    tbody.innerHTML = '<tr><td colspan="8">Cargando reservas...</td></tr>';
 
-    lista.innerHTML =
-        '<h3>Reservas:</h3><ul>' +
-        reservas.map(r => `<li>${r.destino} - ${r.usuario} - ${r.fecha}</li>`).join('') +
-        '</ul>';
+    try {
+        const res = await fetch(`${API_URL}/reservas`);
+        const reservas = await res.json();
+
+        tbody.innerHTML = '';
+
+        if (!reservas || reservas.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8">No hay reservas registradas</td></tr>';
+            return;
+        }
+
+        reservas.forEach(reserva => {
+            const row = document.createElement('tr');
+
+            // Estado con clase CSS
+            const estadoClass = reserva.estado ? reserva.estado.toLowerCase() : 'pendiente';
+            const estadoText = reserva.estado || 'Pendiente';
+
+            row.innerHTML = `
+                <td>${reserva.nombre_cliente || 'N/A'}</td>
+                <td>${reserva.email_cliente || 'N/A'}</td>
+                <td>${reserva.destino || 'N/A'}</td>
+                <td>${reserva.fecha_inicio || 'N/A'} - ${reserva.fecha_fin || 'N/A'}</td>
+                <td>${reserva.numero_personas || 'N/A'}</td>
+                <td>$${reserva.precio_total ? Number(reserva.precio_total).toLocaleString() : 'N/A'}</td>
+                <td><span class="estado ${estadoClass}">${estadoText}</span></td>
+                <td class="acciones">
+                    <button class="edit-btn" onclick="editarReserva('${reserva.id}')">
+                        <i class="fa fa-pen"></i>
+                    </button>
+                    <button class="delete-btn" onclick="eliminarReserva('${reserva.id}')">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+            `;
+
+            tbody.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error('Error cargando reservas:', error);
+        tbody.innerHTML = '<tr><td colspan="8">Error cargando reservas</td></tr>';
+    }
 }
 
+// EDITAR RESERVA
+function editarReserva(id) {
+    alert(`Función editar reserva en desarrollo. ID: ${id}\n\nPróximamente podrás cambiar el estado de la reserva.`);
+}
+
+// ELIMINAR RESERVA
+async function eliminarReserva(id) {
+    if (confirm('¿Estás seguro de que quieres eliminar esta reserva?')) {
+        try {
+            const res = await fetch(`${API_URL}/reservas/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+                alert('Reserva eliminada correctamente');
+                cargarReservas(); // Recargar la lista
+            } else {
+                alert('Error eliminando la reserva');
+            }
+        } catch (error) {
+            console.error('Error eliminando reserva:', error);
+            alert('Error eliminando la reserva');
+        }
+    }
+}
+
+// LOGOUT (ELIMINAR TOKEN Y REDIRIGIR)
 function cerrarSesion() {
     localStorage.removeItem('token');
     window.location.href = '../index.html';
