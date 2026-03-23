@@ -351,6 +351,51 @@ function reservarDestino() {
     });
 
     if (!usuarioActual.autenticado) {
+        abrirLoginReq();
+        return;
+    }
+
+    if (!destinoActual) {
+        const nombreDetalle = document.getElementById('detalleNombre')?.textContent?.trim();
+        if (nombreDetalle) {
+            destinoActual = destinos.find(d => d.nombre === nombreDetalle) || null;
+        }
+    }
+
+    if (!destinoActual) {
+        alert('Selecciona un destino antes de reservar.');
+        return;
+    }
+
+    const modalReserva = document.getElementById('modalReserva');
+    if (modalReserva) {
+        // Bloqueamos fechas pasadas justo antes de abrir
+        configurarFechaMinima(); 
+        
+        document.getElementById('reservaDestinoNombre').textContent = destinoActual.nombre;
+        modalReserva.classList.remove('oculto');
+        cerrarDetalle();
+    }
+}
+
+// Esta es la función que evita fechas pasadas
+function configurarFechaMinima() {
+    const fechaInput = document.getElementById('reservaFecha');
+    if (fechaInput) {
+        const hoy = new Date();
+        const yyyy = hoy.getFullYear();
+        let mm = hoy.getMonth() + 1;
+        let dd = hoy.getDate();
+
+        if (mm < 10) mm = '0' + mm;
+        if (dd < 10) dd = '0' + dd;
+
+        const fechaMinima = `${yyyy}-${mm}-${dd}`;
+        fechaInput.setAttribute('min', fechaMinima);
+    }
+    
+
+    if (!usuarioActual.autenticado) {
         console.log('usuario no autenticado, abriendo modal de login');
 
         const modal = document.getElementById('modalLoginReq');
@@ -686,45 +731,67 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-    // Handlers para formularios de registro y login (simulación local)
+    
     document.addEventListener('DOMContentLoaded', function() {
         const registroForm = document.getElementById('registroForm');
-        if (registroForm) {
-            registroForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const nombre = document.getElementById('nombre')?.value?.trim();
-    const apellido = document.getElementById('apellido')?.value?.trim();
-    const email = document.getElementById('email')?.value?.trim().toLowerCase();
-    const password = document.getElementById('password')?.value;
 
-    if (!email || !password) {
-        alert('Por favor, completa todos los campos.');
-        return;
-    }
+if (registroForm) {
+    // 1. BLOQUEO EN TIEMPO REAL (No permite escribir números ni símbolos)
+    const inputsTexto = [document.getElementById('nombre'), document.getElementById('apellido')];
+    inputsTexto.forEach(input => {
+        if (input) {
+            input.addEventListener('input', function() {
+                // Reemplaza cualquier cosa que no sea letra o espacio
+                this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+            });
+        }
+    });
 
-    // Guardar usuario en localStorage para permitir login sin depender de Supabase.
-    // (Si Supabase está cargado, también lo guardamos ahí como respaldo).
-    let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-    usuarios.push({ nombre, apellido, email, password });
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    // 2. EVENTO DE ENVÍO
+    registroForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-    if (typeof supabase !== 'undefined' && typeof _supabase !== 'undefined') {
+        // Captura de datos
+        const nombre = document.getElementById('nombre')?.value?.trim();
+        const apellido = document.getElementById('apellido')?.value?.trim();
+        const email = document.getElementById('email')?.value?.trim().toLowerCase();
+        const password = document.getElementById('password')?.value;
+
+        // --- NUEVA VALIDACIÓN DE SOLO LETRAS ---
+        const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+
+        if (!nombre || !apellido || !email || !password) {
+            alert('Por favor, completa todos los campos.');
+            return;
+        }
+
+        if (!soloLetras.test(nombre) || !soloLetras.test(apellido)) {
+            alert('⚠️ El nombre y el apellido solo pueden contener letras.');
+            return;
+        }
+        // ---------------------------------------
+
         try {
+            // INTENTO DE GUARDADO EN SUPABASE
             const { data, error } = await _supabase
-                .from('Perfiles') // Asegúrate que en Supabase se llame así con P mayúscula
+                .from('perfiles') 
                 .insert([{ nombre, apellido, email, password }]);
 
             if (error) {
-                console.warn('Error guardando en Supabase:', error.message);
+                console.error("Error detallado de Supabase:", error);
+                // Si ves el error de "Row-Level Security (RLS)", recuerda activarlo en el panel de Supabase
+                alert("No se pudo guardar en la base de datos: " + error.message);
+                return;
             }
-        } catch (err) {
-            console.warn('Supabase no disponible:', err);
-        }
-    }
 
-    alert('¡Registro guardado con éxito!');
-    window.location.href = 'login.html';
-});
+            alert('¡Usuario registrado correctamente!');
+            window.location.href = 'login.html';
+
+        } catch (err) {
+            console.error("Error de conexión:", err);
+            alert("Error crítico: No se pudo conectar con el servidor.");
+        }
+    });
         }
 
         // Manejador para el formulario de LOGIN con Supabase
@@ -743,7 +810,7 @@ if (loginForm) {
         try {
             // BUSCAMOS al usuario en la tabla 'Perfiles' de Supabase
             const { data: usuario, error } = await _supabase
-                .from('Perfiles')
+                .from('perfiles')
                 .select('*')
                 .eq('email', email)
                 .eq('password', password) // En proyectos reales se usa auth.signIn, pero para tu tabla personalizada es así
@@ -862,4 +929,21 @@ if (loginForm) {
         } else {
             console.warn('No se encontró button.reservar durante el DOMContentLoaded');
         }
-    });
+        // Función para bloquear fechas anteriores a hoy en el calendario
+function configurarFechaMinima() {
+    const fechaInput = document.getElementById('reservaFecha');
+    if (fechaInput) {
+        const hoy = new Date();
+        const yyyy = hoy.getFullYear();
+        let mm = hoy.getMonth() + 1; // Meses empiezan en 0
+        let dd = hoy.getDate();
+
+        if (mm < 10) mm = '0' + mm;
+        if (dd < 10) dd = '0' + dd;
+
+        const fechaMinima = `${yyyy}-${mm}-${dd}`;
+        fechaInput.setAttribute('min', fechaMinima);
+        console.log("📅 Límite de fecha establecido:", fechaMinima);
+    }
+    }
+});

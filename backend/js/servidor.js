@@ -17,7 +17,6 @@ app.use(cors()); // permite solicitudes desde cualquier origen
 const path = require('path');
 // Servir los archivos estáticos del frontend (ajustado a la estructura del repo)
 const frontendDir = path.join(__dirname, '..', '..', 'frontend');
-app.use(express.static(frontendDir));
 
 // Servir index por defecto
 app.get('/', (req, res) => {
@@ -45,7 +44,7 @@ app.post('/registrar', async (req, res) => {
 
         // Verificar si el email ya existe
         const { data: existing, error: errEx } = await supabase
-            .from('usuarios')
+            .from('perfiles')
             .select('id')
             .eq('email', email)
             .limit(1)
@@ -65,8 +64,9 @@ app.post('/registrar', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const { data, error } = await supabase
-            .from('usuarios')
-            .insert([{ nombre, apellido, email, password: hashedPassword }]);
+            .from('perfiles')
+            .insert([{nombre, apellido, email, password: hashedPassword, rol: 'cliente' // rol automático
+}]);
 
         if (error) {
             console.error('Error durante el registro:', error);
@@ -91,8 +91,8 @@ app.post('/login', async (req, res) => {
         }
 
         const { data: user, error } = await supabase
-            .from('usuarios')
-            .select('id, nombre, apellido, password')
+            .from('perfiles')
+            .select('id, nombre, apellido, password, rol')
             .eq('email', email)
             .single();
 
@@ -107,12 +107,104 @@ app.post('/login', async (req, res) => {
 
         const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        res.status(200).json({ message: 'Inicio de sesión exitoso!', token, nombre: user.nombre, apellido: user.apellido });
+        res.status(200).json({message: 'Inicio de sesión exitoso!', token, nombre: user.nombre, apellido: user.apellido, rol: user.rol }); // rol agregado automáticamente a la respuesta
     } catch (error) {
         console.error('Server error:', error);
         res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 
+// DESTINOS
+app.get('/destinos', async (req, res) => {
+    const { data, error } = await supabase.from('destinos').select('*');
+    if (error) return res.status(500).json(error);
+    res.json(data);
+});
+
+app.post('/destinos', async (req, res) => {
+    const { data, error } = await supabase.from('destinos').insert([req.body]);
+    if (error) return res.status(500).json(error);
+    res.json(data);
+});
+
+app.put('/destinos/:id', async (req, res) => {
+    const { id } = req.params;
+    const { data, error } = await supabase.from('destinos').update(req.body).eq('id', id);
+    if (error) return res.status(500).json(error);
+    res.json(data);
+});
+
+app.delete('/destinos/:id', async (req, res) => {
+    const { id } = req.params;
+    const { data, error } = await supabase.from('destinos').delete().eq('id', id);
+    if (error) return res.status(500).json(error);
+    res.json(data);
+});
+
+// PERFILES
+app.get('/perfiles', async (req, res) => {
+    const { data, error } = await supabase.from('perfiles').select('*');
+    if (error) return res.status(500).json(error);
+    res.json(data);
+});
+
+// ======================
+// RESERVAS
+// ======================
+
+// Obtener todas las reservas
+app.get("/reservas", async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from("reservas")
+            .select("*");
+
+        if (error) throw error;
+
+        res.json(data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error al obtener reservas" });
+    }
+});
+
+// Crear reserva
+app.post('/reservas', async (req, res) => {
+    const { data, error } = await supabase
+        .from('reservas')
+        .insert([req.body]);
+
+    if (error) return res.status(500).json(error);
+    res.json(data);
+});
+
+// Editar reserva
+app.put('/reservas/:id', async (req, res) => {
+    const { id } = req.params;
+
+    const { data, error } = await supabase
+        .from('reservas')
+        .update(req.body)
+        .eq('id', id);
+
+    if (error) return res.status(500).json(error);
+    res.json(data);
+});
+
+// Eliminar reserva
+app.delete('/reservas/:id', async (req, res) => {
+    const { id } = req.params;
+
+    const { data, error } = await supabase
+        .from('reservas')
+        .delete()
+        .eq('id', id);
+
+    if (error) return res.status(500).json(error);
+    res.json(data);
+});
+
+// SERVIR FRONTEND (AL FINAL)
+app.use(express.static(frontendDir));
 
 // console.log(autenticacionMiddleware);
