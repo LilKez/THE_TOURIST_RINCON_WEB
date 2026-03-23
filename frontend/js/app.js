@@ -1,3 +1,16 @@
+// 1. CONFIGURACIÓN
+const SUPABASE_URL = "https://zznylyznxkfvwockczck.supabase.co";
+const SUPABASE_KEY = "sb_publishable_TY-D-APBQDoCs98DN35Ljw_594qqAxF";
+
+// Verificamos si la librería cargó antes de intentar usarla
+let _supabase;
+if (typeof supabase !== 'undefined') {
+    _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log("✅ Supabase cargado correctamente");
+} else {
+    console.error("❌ Error: La librería de Supabase no se ha detectado. Revisa el orden en tu HTML.");
+}
+
 /* ==============================
    USUARIO ACTUAL (Simulación de estado de autenticación y rol para controlar acceso a funciones como reservar)
 ================================ */
@@ -677,18 +690,61 @@ document.addEventListener('DOMContentLoaded', function() {
 });
         }
 
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const emailRaw = document.getElementById('email')?.value?.trim();
-                const email = emailRaw ? emailRaw.toLowerCase() : '';
-                const password = document.getElementById('password')?.value;
+        // Manejador para el formulario de LOGIN con Supabase
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email')?.value?.trim().toLowerCase();
+        const password = document.getElementById('password')?.value;
 
+<<<<<<< HEAD
                 if (!email || !password) {
                     alert('Por favor, completa todos los campos.');
                     return;
                 }
+
+        try {
+            // BUSCAMOS al usuario en la tabla 'Perfiles' de Supabase
+            const { data: usuario, error } = await _supabase
+                .from('Perfiles')
+                .select('*')
+                .eq('email', email)
+                .eq('password', password) // En proyectos reales se usa auth.signIn, pero para tu tabla personalizada es así
+                .single();
+
+            if (error || !usuario) {
+                alert('Credenciales inválidas: El correo o la contraseña no coinciden.');
+                console.error('Error de login:', error);
+                return;
+            }
+
+            // Si el usuario existe, guardamos la sesión
+            const token = 'session-' + Date.now();
+            localStorage.setItem('token', token);
+            localStorage.setItem('rol', (usuario.email === 'admin@admin.com') ? 'admin' : 'usuario');
+            localStorage.setItem('usuarioNombre', usuario.nombre);
+
+            alert(`¡Bienvenido de nuevo, ${usuario.nombre}!`);
+            
+            // Redirigir según el rol
+            if (localStorage.getItem('rol') === 'admin') {
+                window.location.href = 'admin/admin.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+
+        } catch (err) {
+            console.error('Error inesperado:', err);
+            alert('Ocurrió un error al intentar iniciar sesión.');
+=======
+        if (!email || !password) {
+            alert('Por favor, completa todos los campos.');
+            return;
+>>>>>>> origin/main
+        }
+    });
+}
 
         try {
             // BUSCAMOS al usuario en la tabla 'Perfiles' de Supabase
