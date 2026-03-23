@@ -190,27 +190,34 @@ if (localStorage.getItem('destinosAdmin')) {
 }
 
 /* =========================
-   RENDER DESTINOS
+   RENDER DESTINOS (Esto es para mostrar las tarjetas de destinos al cargar la página o al filtrar)
 ========================= */
-function renderDestinos(destinos) {
-    const contenedor = document.getElementById("listaDestinosAdmin");
+function mostrarDestinos(lista) {
+    console.log('mostrarDestinos called with', lista.length, 'destinos');
+    const contenedor = document.getElementById("listaDestinos");
+    if (!contenedor) {
+        console.error('Contenedor listaDestinos no encontrado');
+        return;
+    }
     contenedor.innerHTML = "";
 
-    destinos.forEach(destino => {
+    if (lista.length === 0) {
+        contenedor.innerHTML = `<p>No se encontraron destinos</p>`;
+        return;
+    }
 
-        // ✅ FIX mínimo
-        const imagen = (destino.imagenes && destino.imagenes.length > 0)
-            ? destino.imagenes[0]
-            : "../img/default.jpg";
-
+    lista.forEach(destino => {
         contenedor.innerHTML += `
-            <div class="destino-card">
-                <img src="${imagen}" onerror="this.src='../img/default.jpg'">
-                <h3>${destino.nombre}</h3>
-                <p>${destino.pais}</p>
-
-                <button>Editar</button>
-                <button>Eliminar</button>
+            <div class="card" onclick="verDetalle('${destino.id}')">
+                <img src="${destino.imagenes[1]}" alt="${destino.nombre}">
+                <div class="contenido">
+                    <h3>${destino.nombre}</h3>
+                    <p>${destino.descripcion}</p>
+                    <div class="meta">
+                        <span>⭐ ${destino.rating}</span>
+                        <span>$ ${destino.precio.toLocaleString()}</span>
+                    </div>
+                </div>
             </div>
         `;
     });
@@ -260,7 +267,7 @@ function buscarDestinos() {
     attachSearchListeners();
 
 /* =========================
-   DETALLE DESTINO
+   DETALLE DESTINO (Mostrar información completa al hacer clic en una tarjeta)
 ========================= */
 function verDetalle(id) {
     console.log('verDetalle called with id:', id);
@@ -270,25 +277,21 @@ function verDetalle(id) {
         return;
     }
 
-    destinoActual = destino;
+    destinoActual = destino; // Guardar el destino actual
+    console.log('Destino actual:', destino.nombre);
 
-    /*=========================== 
-    FIX mínimo (fix es para asegurar que si no hay imágenes, no rompa la página y muestre una imagen por defecto) 
-    =============================0*/
-    document.getElementById("detalleImagen").src =
-        destino.imagenes?.[0] || "../img/default.jpg";
+    // Imagen principal
+    document.getElementById("detalleImagen").src = destino.imagenes[1];
 
-    document.getElementById("mini1").src =
-        destino.imagenes?.[0] || "../img/default.jpg";
+    // Miniaturas diferentes
+    document.getElementById("mini1").src = destino.imagenes[1] || destino.imagenes[0];
+    document.getElementById("mini2").src = destino.imagenes[2] || destino.imagenes[0];
+    document.getElementById("mini3").src = destino.imagenes[3] || destino.imagenes[0];
 
-    document.getElementById("mini2").src =
-        destino.imagenes?.[1] || destino.imagenes?.[0] || "../img/default.jpg";
-
-    document.getElementById("mini3").src =
-        destino.imagenes?.[2] || destino.imagenes?.[0] || "../img/default.jpg";
-
+    // Título overlay
     document.getElementById("detalleNombreOverlay").textContent = destino.nombre;
 
+    // Información
     document.getElementById("detalleNombre").textContent = destino.nombre;
     document.getElementById("detalleDescripcion").textContent = destino.descripcion;
     document.getElementById("detalleCategoria").textContent = destino.categoria;
@@ -297,6 +300,7 @@ function verDetalle(id) {
     document.getElementById("detallePrecio").textContent = destino.precio.toLocaleString();
 
     document.getElementById("detalleDestino").classList.remove("oculto");
+    console.log('Detalle abierto para:', destino.nombre);
 }
 
 /* =========================
@@ -332,7 +336,85 @@ function cerrarModal() {
 }
 
 
+/* =========================
+   INIT (esto es para mostrar todo al cargar la página)
+========================= */
 
+/* =========================
+    RESERVAR DESTINO
+    La funcion de la ventana de reserva, que se abre al hacer click en el botón de reservar dentro del detalle del destino.
+========================= */
+function reservarDestino() {
+    console.log('reservarDestino called', {
+        autenticado: usuarioActual.autenticado,
+        destinoActual
+    });
+
+    if (!usuarioActual.autenticado) {
+        abrirLoginReq();
+        return;
+    }
+
+    if (!destinoActual) {
+        const nombreDetalle = document.getElementById('detalleNombre')?.textContent?.trim();
+        if (nombreDetalle) {
+            destinoActual = destinos.find(d => d.nombre === nombreDetalle) || null;
+        }
+    }
+
+    if (!destinoActual) {
+        alert('Selecciona un destino antes de reservar.');
+        return;
+    }
+
+    const modalReserva = document.getElementById('modalReserva');
+    if (modalReserva) {
+        // Bloqueamos fechas pasadas justo antes de abrir
+        configurarFechaMinima(); 
+        
+        document.getElementById('reservaDestinoNombre').textContent = destinoActual.nombre;
+        modalReserva.classList.remove('oculto');
+        cerrarDetalle();
+    }
+}
+
+// Esta es la función que evita fechas pasadas
+function configurarFechaMinima() {
+    const fechaInput = document.getElementById('reservaFecha');
+    if (fechaInput) {
+        const hoy = new Date();
+        const yyyy = hoy.getFullYear();
+        let mm = hoy.getMonth() + 1;
+        let dd = hoy.getDate();
+
+        if (mm < 10) mm = '0' + mm;
+        if (dd < 10) dd = '0' + dd;
+
+        const fechaMinima = `${yyyy}-${mm}-${dd}`;
+        fechaInput.setAttribute('min', fechaMinima);
+    }
+    
+
+    if (!usuarioActual.autenticado) {
+        console.log('usuario no autenticado, abriendo modal de login');
+
+        const modal = document.getElementById('modalLoginReq');
+        if (modal) {
+            const titulo = modal.querySelector('h2');
+            const mensaje = modal.querySelector('p');
+            if (titulo) titulo.textContent = 'Inicia sesión o regístrate';
+            if (mensaje) mensaje.textContent = 'Debes iniciar sesión o registrarte antes de reservar este destino.';
+        }
+
+        abrirLoginReq();
+        return;
+    }
+
+    if (!destinoActual) {
+        const nombreDetalle = document.getElementById('detalleNombre')?.textContent?.trim();
+        if (nombreDetalle) {
+            destinoActual = destinos.find(d => d.nombre === nombreDetalle || d.id === nombreDetalle.toLowerCase().replace(/\s+/g, '-')) || null;
+            if (destinoActual) {
                 console.log('destinoActual recuperado desde detalle:', destinoActual.nombre);
             }
         }
@@ -652,42 +734,64 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.addEventListener('DOMContentLoaded', function() {
         const registroForm = document.getElementById('registroForm');
-        if (registroForm) {
-            registroForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const nombre = document.getElementById('nombre')?.value?.trim();
-    const apellido = document.getElementById('apellido')?.value?.trim();
-    const email = document.getElementById('email')?.value?.trim().toLowerCase();
-    const password = document.getElementById('password')?.value;
 
-    if (!email || !password) {
-        alert('Por favor, completa todos los campos.');
-        return;
-    }
+if (registroForm) {
+    // 1. BLOQUEO EN TIEMPO REAL (No permite escribir números ni símbolos)
+    const inputsTexto = [document.getElementById('nombre'), document.getElementById('apellido')];
+    inputsTexto.forEach(input => {
+        if (input) {
+            input.addEventListener('input', function() {
+                // Reemplaza cualquier cosa que no sea letra o espacio
+                this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+            });
+        }
+    });
 
-    // Guardar usuario en localStorage para permitir login sin depender de Supabase.
-    // (Si Supabase está cargado, también lo guardamos ahí como respaldo).
-    let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-    usuarios.push({ nombre, apellido, email, password });
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    // 2. EVENTO DE ENVÍO
+    registroForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-    if (typeof supabase !== 'undefined' && typeof _supabase !== 'undefined') {
+        // Captura de datos
+        const nombre = document.getElementById('nombre')?.value?.trim();
+        const apellido = document.getElementById('apellido')?.value?.trim();
+        const email = document.getElementById('email')?.value?.trim().toLowerCase();
+        const password = document.getElementById('password')?.value;
+
+        // --- NUEVA VALIDACIÓN DE SOLO LETRAS ---
+        const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+
+        if (!nombre || !apellido || !email || !password) {
+            alert('Por favor, completa todos los campos.');
+            return;
+        }
+
+        if (!soloLetras.test(nombre) || !soloLetras.test(apellido)) {
+            alert('⚠️ El nombre y el apellido solo pueden contener letras.');
+            return;
+        }
+        // ---------------------------------------
+
         try {
+            // INTENTO DE GUARDADO EN SUPABASE
             const { data, error } = await _supabase
-                .from('Perfiles') // Asegúrate que en Supabase se llame así con P mayúscula
+                .from('perfiles') 
                 .insert([{ nombre, apellido, email, password }]);
 
             if (error) {
-                console.warn('Error guardando en Supabase:', error.message);
+                console.error("Error detallado de Supabase:", error);
+                // Si ves el error de "Row-Level Security (RLS)", recuerda activarlo en el panel de Supabase
+                alert("No se pudo guardar en la base de datos: " + error.message);
+                return;
             }
-        } catch (err) {
-            console.warn('Supabase no disponible:', err);
-        }
-    }
 
-    alert('¡Registro guardado con éxito!');
-    window.location.href = 'login.html';
-});
+            alert('¡Usuario registrado correctamente!');
+            window.location.href = 'login.html';
+
+        } catch (err) {
+            console.error("Error de conexión:", err);
+            alert("Error crítico: No se pudo conectar con el servidor.");
+        }
+    });
         }
 
         // Manejador para el formulario de LOGIN con Supabase
@@ -698,58 +802,15 @@ if (loginForm) {
         const email = document.getElementById('email')?.value?.trim().toLowerCase();
         const password = document.getElementById('password')?.value;
 
-<<<<<<< HEAD
-                if (!email || !password) {
-                    alert('Por favor, completa todos los campos.');
-                    return;
-                }
-
-        try {
-            // BUSCAMOS al usuario en la tabla 'Perfiles' de Supabase
-            const { data: usuario, error } = await _supabase
-                .from('Perfiles')
-                .select('*')
-                .eq('email', email)
-                .eq('password', password) // En proyectos reales se usa auth.signIn, pero para tu tabla personalizada es así
-                .single();
-
-            if (error || !usuario) {
-                alert('Credenciales inválidas: El correo o la contraseña no coinciden.');
-                console.error('Error de login:', error);
-                return;
-            }
-
-            // Si el usuario existe, guardamos la sesión
-            const token = 'session-' + Date.now();
-            localStorage.setItem('token', token);
-            localStorage.setItem('rol', (usuario.email === 'admin@admin.com') ? 'admin' : 'usuario');
-            localStorage.setItem('usuarioNombre', usuario.nombre);
-
-            alert(`¡Bienvenido de nuevo, ${usuario.nombre}!`);
-            
-            // Redirigir según el rol
-            if (localStorage.getItem('rol') === 'admin') {
-                window.location.href = 'admin/admin.html';
-            } else {
-                window.location.href = 'index.html';
-            }
-
-        } catch (err) {
-            console.error('Error inesperado:', err);
-            alert('Ocurrió un error al intentar iniciar sesión.');
-=======
         if (!email || !password) {
             alert('Por favor, completa todos los campos.');
             return;
->>>>>>> origin/main
         }
-    });
-}
 
         try {
             // BUSCAMOS al usuario en la tabla 'Perfiles' de Supabase
             const { data: usuario, error } = await _supabase
-                .from('Perfiles')
+                .from('perfiles')
                 .select('*')
                 .eq('email', email)
                 .eq('password', password) // En proyectos reales se usa auth.signIn, pero para tu tabla personalizada es así
