@@ -1,19 +1,4 @@
-// ==============================
-// 1. CONFIGURACIÓN SUPABASE
-// ==============================
-const SUPABASE_URL = "https://zznylyznxkfvwockczck.supabase.co";
-const SUPABASE_KEY = "sb_publishable_TY-D-APBQDoCs98DN35Ljw_594qqAxF";
-
-let _supabase;
-
-if (typeof supabase !== 'undefined') {
-    _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    console.log("✅ Supabase cargado correctamente");
-} else {
-    console.error("❌ Supabase no cargó. Revisa el script en HTML");
-}
-
-// ==============================
+// ============================== 
 // USUARIO
 // ==============================
 let usuarioActual = {
@@ -22,6 +7,7 @@ let usuarioActual = {
 };
 
 let destinoActual = null;
+let destinosGlobal = [];
 
 // Mantener sesión
 const token = localStorage.getItem('token');
@@ -34,40 +20,104 @@ if (token) {
 // LOGIN MODAL
 // ==============================
 function abrirLogin() {
-    document.getElementById("loginModal").classList.remove("oculto");
+    document.getElementById("loginModal")?.classList.remove("oculto");
 }
 
 function cerrarLogin() {
-    document.getElementById("loginModal").classList.add("oculto");
+    document.getElementById("loginModal")?.classList.add("oculto");
 }
 
 // ==============================
-// DESTINOS
+// 🚀 CARGAR DESTINOS DESDE BACKEND
 // ==============================
-const destinos = [
-    {
-        id: "cartagena",
-        nombre: "Cartagena",
-        descripcion: "Ciudad amurallada con playas caribeñas.",
-        precio: 1500000,
-        rating: 4.8,
-        imagenes: ["https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/f6/92/cd/cartagena-colombia.jpg?w=400"]
-    }
-];
+async function cargarDestinos() {
+    const contenedor = document.getElementById("listaDestinos");
 
+    if (contenedor) {
+        contenedor.innerHTML = "<p>Cargando destinos...</p>";
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/destinos");
+
+        if (!res.ok) {
+            throw new Error(`Error HTTP: ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        console.log("📦 Destinos desde backend:", data);
+
+        if (!Array.isArray(data)) {
+            throw new Error("La respuesta no es un array");
+        }
+
+        destinosGlobal = data;
+
+        mostrarDestinos(destinosGlobal);
+
+    } catch (error) {
+        console.error("❌ Error cargando destinos:", error);
+
+        if (contenedor) {
+            contenedor.innerHTML = "<p>Error cargando destinos 😢</p>";
+        }
+    }
+}
+
+// ==============================
+// 🖼️ OBTENER IMAGEN 
+// ==============================
+function obtenerImagen(destino) {
+    if (!destino || !destino.imagenes) {
+        return "https://via.placeholder.com/300";
+    }
+
+    try {
+        let imagen = null;
+
+        if (typeof destino.imagenes === "string") {
+            const parsed = JSON.parse(destino.imagenes);
+            imagen = Array.isArray(parsed) ? parsed[0] : destino.imagenes;
+        } else if (Array.isArray(destino.imagenes)) {
+            imagen = destino.imagenes[0];
+        }
+
+        if (imagen && !imagen.startsWith("http")) {
+            return `http://localhost:3000${imagen}`;
+        }
+
+        return imagen;
+
+    } catch (error) {
+        console.warn("⚠️ Error imagen:", destino.imagenes);
+    }
+
+    return "https://via.placeholder.com/300";
+}
 // ==============================
 // MOSTRAR DESTINOS
 // ==============================
 function mostrarDestinos(lista) {
     const contenedor = document.getElementById("listaDestinos");
+
+    if (!contenedor) return;
+
     contenedor.innerHTML = "";
 
+    if (!lista || lista.length === 0) {
+        contenedor.innerHTML = "<p>No hay destinos disponibles</p>";
+        return;
+    }
+
     lista.forEach(destino => {
+        const imagen = obtenerImagen(destino);
+
         contenedor.innerHTML += `
         <div class="card" onclick="verDetalle('${destino.id}')">
-            <img src="${destino.imagenes[0]}">
-            <h3>${destino.nombre}</h3>
-            <p>$ ${destino.precio.toLocaleString()}</p>
+            <img src="${imagen}" alt="${destino.nombre}">
+            <h3>${destino.nombre || "Sin nombre"}</h3>
+            <p>$ ${Number(destino.precio || 0).toLocaleString()}</p>
         </div>`;
     });
 }
@@ -76,15 +126,65 @@ function mostrarDestinos(lista) {
 // DETALLE
 // ==============================
 function verDetalle(id) {
-    destinoActual = destinos.find(d => d.id === id);
+    destinoActual = destinosGlobal.find(d => String(d.id) === String(id));
+
+    if (!destinoActual) {
+        console.error("❌ Destino no encontrado:", id);
+        return;
+    }
 
     document.getElementById("detalleNombre").textContent = destinoActual.nombre;
-    document.getElementById("detallePrecio").textContent = destinoActual.precio;
-    document.getElementById("detalleDestino").classList.remove("oculto");
-}
+    document.getElementById("detallePrecio").textContent =
+        "$ " + Number(destinoActual.precio || 0).toLocaleString();
 
+    // ==============================
+    //  MANEJO DE IMÁGENES
+    // ==============================
+    let imagenes = [];
+
+    try {
+        if (typeof destinoActual.imagenes === "string") {
+            imagenes = JSON.parse(destinoActual.imagenes);
+        } else if (Array.isArray(destinoActual.imagenes)) {
+            imagenes = destinoActual.imagenes;
+        }
+    } catch (e) {
+        console.warn("Error parseando imágenes");
+    }
+
+    // Ajustar rutas si son locales
+    imagenes = imagenes.map(img => {
+        if (!img) return "https://via.placeholder.com/300";
+        return img.startsWith("http") ? img : `http://localhost:3000${img}`;
+    });
+
+    // Imagen principal
+    document.getElementById("detalleImagen").src =
+        imagenes[0] || "https://via.placeholder.com/500";
+
+    // Miniaturas
+    document.getElementById("mini1").src =
+        imagenes[0] || "https://via.placeholder.com/100";
+
+    document.getElementById("mini2").src =
+        imagenes[1] || imagenes[0] || "https://via.placeholder.com/100";
+
+    document.getElementById("mini3").src =
+        imagenes[2] || imagenes[0] || "https://via.placeholder.com/100";
+
+    document.getElementById("detalleDestino")?.classList.remove("oculto");
+}
+function cambiarImagen(img) {
+    document.getElementById("detalleImagen").src = img.src;
+}
 function cerrarDetalle() {
-    document.getElementById("detalleDestino").classList.add("oculto");
+    const detalle = document.getElementById("detalleDestino");
+    if (detalle) {
+        detalle.classList.add("oculto");
+    }
+
+    // LIMPIEZA (esto evita bugs)
+    destinoActual = null;
 }
 
 // ==============================
@@ -119,26 +219,28 @@ function reservarDestino() {
     configurarFechaMinima();
 
     document.getElementById("reservaDestinoNombre").textContent = destinoActual.nombre;
-    document.getElementById("modalReserva").classList.remove("oculto");
+    document.getElementById("modalReserva")?.classList.remove("oculto");
 }
 
 function cerrarModalReserva() {
-    document.getElementById("modalReserva").classList.add("oculto");
+    document.getElementById("modalReserva")?.classList.add("oculto");
 }
 
 // ==============================
 // CHATBOT
 // ==============================
 function abrirBot() {
-    document.getElementById("chatBot").classList.remove("oculto");
+    document.getElementById("chatBot")?.classList.remove("oculto");
 }
 
 function cerrarBot() {
-    document.getElementById("chatBot").classList.add("oculto");
+    document.getElementById("chatBot")?.classList.add("oculto");
 }
 
 function agregarMensaje(texto, tipo) {
     const chat = document.getElementById("chatMensajes");
+    if (!chat) return;
+
     const div = document.createElement("div");
 
     div.className = tipo === "bot" ? "mensaje-bot" : "mensaje-user";
@@ -170,19 +272,16 @@ async function preguntarBot() {
 
         const data = await res.json();
 
-        // quitar "Escribiendo..."
         const chat = document.getElementById("chatMensajes");
-        chat.removeChild(chat.lastChild);
+        chat?.removeChild(chat.lastChild);
 
-        const respuesta = data.respuesta || "No entendí tu pregunta 😅";
-
-        agregarMensaje(respuesta, "bot");
+        agregarMensaje(data.respuesta || "No entendí 😅", "bot");
 
     } catch (error) {
         console.error(error);
 
         const chat = document.getElementById("chatMensajes");
-        chat.removeChild(chat.lastChild);
+        chat?.removeChild(chat.lastChild);
 
         agregarMensaje("Error con el servidor 😢", "bot");
     }
@@ -192,16 +291,42 @@ async function preguntarBot() {
 // LOGIN REQUERIDO
 // ==============================
 function abrirLoginReq() {
-    document.getElementById("modalLoginReq").classList.remove("oculto");
+    document.getElementById("modalLoginReq")?.classList.remove("oculto");
 }
 
 function cerrarLoginReq() {
-    document.getElementById("modalLoginReq").classList.add("oculto");
+    document.getElementById("modalLoginReq")?.classList.add("oculto");
+}
+
+// ==============================
+// 🍔 MENU USUARIO (FIX)
+// ==============================
+function inicializarMenuUsuario() {
+    const btn = document.getElementById("accountBtn");
+    const menu = document.getElementById("accountMenu");
+
+    if (!btn || !menu) return;
+
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("oculto");
+    });
+
+    document.addEventListener("click", () => {
+        menu.classList.add("oculto");
+    });
+
+    menu.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
 }
 
 // ==============================
 // INICIO
 // ==============================
 document.addEventListener("DOMContentLoaded", () => {
-    mostrarDestinos(destinos);
+    console.log("🚀 App iniciada");
+
+    cargarDestinos();
+    inicializarMenuUsuario(); 
 });

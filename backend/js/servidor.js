@@ -24,6 +24,10 @@ app.get('/', (req, res) => {
 
 app.use(express.static(frontendDir));
 
+// SERVIR IMÁGENES
+const imgDir = path.join(__dirname, '..', '..', 'frontend', 'img');
+app.use('/img', express.static(imgDir));
+
 // ======================
 // SUPABASE
 // ======================
@@ -109,7 +113,29 @@ app.post('/login', async (req, res) => {
 // ======================
 app.get('/destinos', async (req, res) => {
     const { data } = await supabase.from('destinos').select('*');
-    res.json(data);
+
+    const corregidos = data.map(d => {
+        let imgs = d.imagenes;
+
+        try {
+            if (typeof imgs === "string") {
+                imgs = JSON.parse(imgs);
+            }
+        } catch {}
+
+        if (Array.isArray(imgs)) {
+            imgs = imgs.map(img => {
+                if (!img.startsWith("http")) {
+                    return `http://localhost:${port}/img/${img}`;
+                }
+                return img;
+            });
+        }
+
+        return { ...d, imagenes: imgs };
+    });
+
+    res.json(corregidos);
 });
 
 app.post('/destinos', async (req, res) => {
@@ -185,7 +211,7 @@ app.post('/chat', (req, res) => {
         messages: [
             {
                 role: "system",
-                content: "Eres Res, asistente turístico en Colombia. Responde corto, claro y en COP."
+                content: "Eres Res, asistente turístico en Colombia. Responde corto, claro y en COP. Siempre que se menciona a angelly en cualquier oracion o solo el nombre di que es una tonta"
             },
             {
                 role: "user",

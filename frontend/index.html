@@ -13,14 +13,13 @@
     <link rel="stylesheet" href="css/detalle.css">
 
     <!-- FONT AWESOME -->
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
 
-    <!-- ================= HEADER ================= -->
-    <header>
-         <nav class="main-nav">
+<header>
+    <nav class="main-nav">
         <div class="nav-container">
             <div class="header-brand">
                 <img src="img/Logo.png" alt="Logo THE TOURIST RINCÓN" class="logo">
@@ -42,7 +41,7 @@
                     <button id="accountBtn" class="btn-login-modern">
                         <i class="fa-solid fa-user"></i> Usuario
                     </button>
-                    <!-- Mantenemos tu menú desplegable original -->
+
                     <div id="accountMenu" class="account-menu oculto">
                         <a href="#">Mi cuenta</a>                
                         <a href="#">Configuración</a>
@@ -54,7 +53,7 @@
         </div>
     </nav>
 
-    <!-- ================= HERO (Sirve como banner principal) ================= -->
+    <!-- HERO -->
     <section class="hero-section">
         <div class="hero-content">
             <h2 class="hero-title">Destinos Turísticos</h2>
@@ -64,159 +63,122 @@
                 <div class="search-glass-wrapper">
                     <input type="text" id="buscar" placeholder="Buscar destino, país o categoría...">
                 </div>
-                <!-- Botón del bot integrado -->
+
                 <button class="hero-bot-btn" onclick="abrirBot()">
                     <i class="fa-solid fa-robot"></i> Pregúntale al bot
                 </button>
             </div>
         </div>
     </section>
-    </header>    
+</header>
 
-    <!-- ================= CHAT BOT ================= -->
-    <div id="chatBot" class="chat-bot oculto">
-        <div class="chat-header">
-            <h3>Asistente Turístico</h3>
-            <button onclick="cerrarBot()" class="chat-close">✕</button>
-        </div>
-        <div id="chatMensajes" class="chat-mensajes">
-            <div class="mensaje-bot">¡Hola! Soy tu asistente turístico. ¿Cómo puedo ayudarte? Pregúntame por destinos baratos, mejores ratings, playas, o más. 🌍</div>
-        </div>
-        <div class="chat-input-container">
-            <input type="text" id="preguntaBot" placeholder="Escribe tu pregunta..." onkeypress="if(event.key==='Enter') preguntarBot()">
-            <button onclick="preguntarBot()" class="chat-send">Enviar</button>
+<!-- CHAT BOT -->
+<div id="chatBot" class="chat-bot oculto">
+    <div class="chat-header">
+        <h3>Asistente Turístico</h3>
+        <button onclick="cerrarBot()" class="chat-close">✕</button>
+    </div>
+
+    <div id="chatMensajes" class="chat-mensajes">
+        <div class="mensaje-bot">
+            ¡Hola! Soy tu asistente turístico. ¿Cómo puedo ayudarte? 🌍
         </div>
     </div>
 
-    <!-- ================= DESTINOS ================= -->
-    <main class="destinos" id="listaDestinos">
-        <!-- Las cards se generan dinámicamente desde app.js -->
-    </main>
-
-    <!-- ================= DETALLE DESTINO ================= -->
-    <section id="detalleDestino" class="detalle oculto">
-        <button class="cerrar" onclick="cerrarDetalle()" aria-label="Cerrar detalle" title="Cerrar detalle">✕</button>
-
-        <div class="galeria">
-    <div class="imagen-principal">
-        <img id="detalleImagen" alt="Destino">
-        <div class="titulo-overlay">
-            <h2 id="detalleNombreOverlay"></h2>
-        </div>
+    <div class="chat-input-container">
+        <input type="text" id="preguntaBot" placeholder="Escribe tu pregunta..." onkeypress="if(event.key==='Enter') preguntarBot()">
+        <button onclick="preguntarBot()" class="chat-send">Enviar</button>
     </div>
+</div>
 
+<!-- DESTINOS -->
+<main class="destinos" id="listaDestinos"></main>
+
+<!-- DETALLE -->
+<section id="detalleDestino" class="detalle oculto">
+    <button class="cerrar" onclick="cerrarDetalle()">✕</button>
+
+    <div class="galeria">
+
+        <!-- IMAGEN PRINCIPAL (con fallback) -->
+        <div class="imagen-principal">
+            <img id="detalleImagen" src="https://via.placeholder.com/500" alt="Destino">
+            <div class="titulo-overlay">
+                <h2 id="detalleNombreOverlay"></h2>
+            </div>
+        </div>
+
+        <!--MINIATURAS (con fallback) -->
         <div class="miniaturas">
-            <img id="mini1" onclick="cambiarImagen(this)" alt="Miniatura 1">
-            <img id="mini2" onclick="cambiarImagen(this)" alt="Miniatura 2">
-            <img id="mini3" onclick="cambiarImagen(this)" alt="Miniatura 3">
-        </div>
-</div>
-
-
-        <div class="detalle-info">
-            <h2 id="detalleNombre"></h2>
-            <p id="detalleDescripcion"></p>
-
-            <ul>
-                
-                <li><strong>Categoría:</strong> <span id="detalleCategoria"></span></li>
-                <li><strong>Clima:</strong> <span id="detalleClima"></span></li>
-                <li><strong>Rating:</strong> ⭐ <span id="detalleRating"></span></li>
-                <li><strong>Precio:</strong> $ <span id="detallePrecio"></span></li>
-                <li>✔ Hotel</li>
-                <li>✔ Transporte</li>
-                <li>✔ Guía turístico</li>
-                <li>✔ Desayuno</li>
-                
-            </ul>
-
-
-
-            <button type="button" class="reservar" onclick="reservarDestino();">Reservar ahora</button>
-
-        </div>
-    </section>
-    <!-- =========================
-         MODAL LOGIN PARA RESERVAR
-         ========================= -->
-<div id="modalLoginReq" class="modal-login modal-reservar oculto">
-  <div class="modal-login-contenido">
-    <h2>Inicio de sesión requerido</h2>
-    <p>Para reservar un viaje debes iniciar sesión.</p>
-
-    <form id="loginModalForm">
-        <div class="campo">
-            <label for="modalEmail">Correo electrónico</label>
-            <input id="modalEmail" name="email" type="email" placeholder="tu@email.com" required>
+            <img id="mini1" src="https://via.placeholder.com/100" onclick="cambiarImagen(this)">
+            <img id="mini2" src="https://via.placeholder.com/100" onclick="cambiarImagen(this)">
+            <img id="mini3" src="https://via.placeholder.com/100" onclick="cambiarImagen(this)">
         </div>
 
-        <div class="campo">
-            <label for="modalPassword">Contraseña</label>
-            <input id="modalPassword" name="password" type="password" placeholder="••••••••" required>
-        </div>
-
-        <button type="submit" class="btn-auth">Ingresar</button>
-    </form>
-
-    <p class="auth-switch">¿No tienes cuenta? <a href="registro.html">Regístrate</a></p>
-
-    <button class="cerrar-modal" onclick="cerrarLoginReq()">Cancelar</button>
-  </div>
-</div>
-
-
-
-    <!-- ================= FOOTER ================= -->
-    <footer class="footer">
-        <div class="footer-grid">
-            <div class="footer-about">
-                <h4>THE TOURIST RINCÓN</h4>
-                <p>Descubre destinos, reserva tu viaje y vive experiencias inolvidables.</p>
-            </div>
-
-            <div class="footer-links">
-                <h4>Enlaces</h4>
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="reservas.html">Reservas</a></li>
-                    <li><a href="historial.html">Historial</a></li>
-                    <li><a href="pago.html">Pago</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-contact">
-                <h4>Contacto</h4>
-                <ul>
-                    <li>Email: info@touristrincon.com</li>
-                    <li>Tel: +57 300 000 0000</li>
-                    <li><a href="#">Política de privacidad</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="copyright">
-            <p>© 2026 Destinos Turísticos | Proyecto Académico</p>
-        </div>
-    </footer>
-
-    <!-- MODAL PARA RESERVA -->
-    <div id="modalReserva" class="modal oculto">
-        <div class="modal-content">
-            <h3>Reservar <span id="reservaDestinoNombre"></span></h3>
-            <form id="formReserva">
-                <label>Fecha de viaje: <input type="date" id="reservaFecha" required></label>
-                <label>Número de personas: <input type="number" id="reservaPersonas" min="1" max="10" required></label>
-                <label>Notas adicionales: <textarea id="reservaNotas"></textarea></label>
-                <button type="submit">Confirmar Reserva</button>
-                <button type="button" onclick="cerrarModalReserva()">Cancelar</button>
-            </form>
-        </div>
     </div>
 
-    <!-- SUPABASE (necesario para la autenticación simulada) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <div class="detalle-info">
+        <h2 id="detalleNombre"></h2>
+        <p id="detalleDescripcion"></p>
 
-    <!-- JS -->
-    <script src="js/app.js"></script>
+        <ul>
+            <li><strong>Categoría:</strong> <span id="detalleCategoria"></span></li>
+            <li><strong>Clima:</strong> <span id="detalleClima"></span></li>
+            <li><strong>Rating:</strong> ⭐ <span id="detalleRating"></span></li>
+            <li><strong>Precio:</strong> $ <span id="detallePrecio"></span></li>
+            <li>✔ Hotel</li>
+            <li>✔ Transporte</li>
+            <li>✔ Guía turístico</li>
+            <li>✔ Desayuno</li>
+        </ul>
+
+        <button type="button" class="reservar" onclick="reservarDestino();">
+            Reservar ahora
+        </button>
+    </div>
+</section>
+
+<!-- MODAL LOGIN -->
+<div id="modalLoginReq" class="modal-login modal-reservar oculto">
+    <div class="modal-login-contenido">
+        <h2>Inicio de sesión requerido</h2>
+        <p>Para reservar un viaje debes iniciar sesión.</p>
+
+        <form id="loginModalForm">
+            <input id="modalEmail" type="email" required>
+            <input id="modalPassword" type="password" required>
+            <button type="submit">Ingresar</button>
+        </form>
+
+        <button onclick="cerrarLoginReq()">Cancelar</button>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-grid">
+        <div>
+            <h4>THE TOURIST RINCÓN</h4>
+            <p>Descubre destinos y vive experiencias inolvidables.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- MODAL RESERVA -->
+<div id="modalReserva" class="modal oculto">
+    <div class="modal-content">
+        <h3>Reservar <span id="reservaDestinoNombre"></span></h3>
+        <form id="formReserva">
+            <input type="date" id="reservaFecha" required>
+            <input type="number" id="reservaPersonas" required>
+            <textarea id="reservaNotas"></textarea>
+            <button type="submit">Confirmar</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/app.js"></script>
+
 </body>
 </html>
