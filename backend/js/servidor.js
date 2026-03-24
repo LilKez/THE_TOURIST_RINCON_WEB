@@ -3,7 +3,7 @@ require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') }
 
 const express = require('express');
 const cors = require('cors');
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs'); // ❌ COMENTAR bcrypt - ya no lo usaremos
 const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
 const https = require('https');
@@ -41,11 +41,11 @@ const supabase = createClient(
 // ======================
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    console.log(`Servidor en http://localhost:${port}`);
+    console.log(`Servidor corriendo en http://localhost:${port}`);
 });
 
 // ======================
-// AUTH
+// AUTH - CON TEXTO PLANO
 // ======================
 app.post('/registrar', async (req, res) => {
     try {
@@ -54,6 +54,9 @@ app.post('/registrar', async (req, res) => {
         if (!email || !password || !nombre) {
             return res.status(400).json({ error: 'Datos incompletos' });
         }
+
+        console.log(`📝 Registrando nuevo usuario: ${email}`);
+        console.log(`🔑 Contraseña (texto plano): ${password}`);
 
         const { data: existing } = await supabase
             .from('perfiles')
@@ -65,16 +68,27 @@ app.post('/registrar', async (req, res) => {
             return res.status(409).json({ error: 'Email ya registrado' });
         }
 
-        const hashed = await bcrypt.hash(password, 10);
-
-        await supabase.from('perfiles').insert([
-            { nombre, apellido, email, password: hashed, rol: 'cliente' }
+        // 🔥 GUARDAR EN TEXTO PLANO (sin hashear)
+        const { error: insertError } = await supabase.from('perfiles').insert([
+            { 
+                nombre, 
+                apellido, 
+                email, 
+                password: password, // Texto plano
+                rol: 'cliente' 
+            }
         ]);
 
+        if (insertError) {
+            console.error('❌ Error al insertar:', insertError);
+            return res.status(500).json({ error: 'Error al registrar usuario' });
+        }
+
+        console.log(`✅ Usuario registrado exitosamente: ${email}`);
         res.json({ message: 'Registrado correctamente' });
 
     } catch (err) {
-        console.error(err);
+        console.error('❌ Error en registro:', err);
         res.status(500).json({ error: 'Error servidor' });
     }
 });
@@ -82,29 +96,71 @@ app.post('/registrar', async (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
+        
+        console.log("🔐 Intento de login para:", email);
 
-        const { data: user } = await supabase
+        const { data: user, error } = await supabase
             .from('perfiles')
             .select('*')
             .eq('email', email)
             .single();
 
-        if (!user) return res.status(400).json({ error: 'Credenciales inválidas' });
+        if (error || !user) {
+            console.log("❌ Usuario no encontrado");
+            return res.status(400).json({ error: 'Credenciales inválidas' });
+        }
 
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) return res.status(400).json({ error: 'Credenciales inválidas' });
+        console.log("✅ Usuario encontrado:", user.email);
+        console.log("👤 Rol en BD:", user.rol); // ← Ver qué rol tiene
+
+        // Comparar contraseña (texto plano)
+        if (user.password !== password) {
+            console.log("❌ Contraseña incorrecta");
+            return res.status(400).json({ error: 'Credenciales inválidas' });
+        }
 
         const token = jwt.sign(
-            { id: user.id },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { 
+                id: user.id,
+                email: user.email,
+                nombre: user.nombre,
+                rol: user.rol || 'cliente'  // ← Asegurar que rol se guarda
+            },
+            process.env.JWT_SECRET || 'mi-secreto-temporal-para-desarrollo',
+            { expiresIn: '24h' }
         );
 
-        res.json({ token, nombre: user.nombre, rol: user.rol });
+        console.log("✅ Login exitoso. Rol enviado:", user.rol || 'cliente');
+
+        res.json({ 
+            token, 
+            nombre: user.nombre,
+            rol: user.rol || 'cliente',  // ← Enviar rol correcto
+            email: user.email
+        });
 
     } catch (err) {
-        console.error(err);
+        console.error('❌ Error en login:', err);
         res.status(500).json({ error: 'Error servidor' });
+    }
+});
+
+// ======================
+// PERFILES (USUARIOS)
+// ======================
+app.get('/perfiles', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('perfiles')
+            .select('id, nombre, apellido, email, rol')
+            .order('nombre', { ascending: true });
+        
+        if (error) throw error;
+        
+        res.json(data);
+    } catch (err) {
+        console.error('Error al obtener perfiles:', err);
+        res.status(500).json({ error: 'Error al obtener usuarios' });
     }
 });
 
