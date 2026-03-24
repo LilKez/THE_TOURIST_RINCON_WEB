@@ -1,210 +1,242 @@
-// Cargar variable de entorno
-require('dotenv').config();
+// Cargar variables de entorno
+require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
 
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
-// const autenticacionMiddleware = require('./middleware/autenticacion_middleware');
-
-// Configuración del servidor y de la base de datos
-const app = express();
-app.use(express.json());// permite al servidor leer datos en formato JSON
-app.use(cors()); // permite solicitudes desde cualquier origen
-
-// Esto hara que los archivos dentro de la carpeta "public" sean accesibles desde el navegador
+const https = require('https');
 const path = require('path');
-// Servir los archivos estáticos del frontend (ajustado a la estructura del repo)
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+// ======================
+// FRONTEND
+// ======================
 const frontendDir = path.join(__dirname, '..', '..', 'frontend');
 
-// Servir index por defecto
 app.get('/', (req, res) => {
     res.sendFile(path.join(frontendDir, 'index.html'));
 });
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+app.use(express.static(frontendDir));
 
+// ======================
+// SUPABASE
+// ======================
+const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_ANON_KEY
+);
+
+// ======================
+// SERVIDOR
+// ======================
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    console.log(`Servidor escuchando en http://localhost:${port}`);
+    console.log(`Servidor en http://localhost:${port}`);
 });
 
-// Endpoint de registro de usuario
-// Registro de usuario (espera: nombre, apellido, email, password)
+// ======================
+// AUTH
+// ======================
 app.post('/registrar', async (req, res) => {
     try {
         const { nombre, apellido, email, password } = req.body;
 
         if (!email || !password || !nombre) {
-            return res.status(400).json({ error: 'Nombre, email y contraseña son requeridos.' });
+            return res.status(400).json({ error: 'Datos incompletos' });
         }
 
-        // Verificar si el email ya existe
-        const { data: existing, error: errEx } = await supabase
+        const { data: existing } = await supabase
             .from('perfiles')
             .select('id')
             .eq('email', email)
-            .limit(1)
             .maybeSingle();
 
-        if (errEx) {
-            console.error('Error comprobando usuario existente:', errEx);
-            return res.status(500).json({ error: 'Error del servidor al verificar usuario.' });
-        }
-
         if (existing) {
-            return res.status(409).json({ error: 'El email ya está registrado.' });
+            return res.status(409).json({ error: 'Email ya registrado' });
         }
 
-        // Hashear la contraseña
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashed = await bcrypt.hash(password, 10);
 
-        const { data, error } = await supabase
-            .from('perfiles')
-            .insert([{nombre, apellido, email, password: hashedPassword, rol: 'cliente' // rol automático
-}]);
+        await supabase.from('perfiles').insert([
+            { nombre, apellido, email, password: hashed, rol: 'cliente' }
+        ]);
 
-        if (error) {
-            console.error('Error durante el registro:', error);
-            return res.status(500).json({ error: 'El registro de usuario falló.' });
-        }
+        res.json({ message: 'Registrado correctamente' });
 
-        res.status(201).json({ message: 'Usuario registrado correctamente.' });
-    } catch (error) {
-        console.error('Server error:', error);
-        res.status(500).json({ error: 'Error interno del servidor.' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error servidor' });
     }
 });
 
-// Endpoint de login de usuarios
-// Login (espera: email, password)
 app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email y contraseña son requeridos.' });
-        }
-
-        const { data: user, error } = await supabase
+        const { data: user } = await supabase
             .from('perfiles')
-            .select('id, nombre, apellido, password, rol')
+            .select('*')
             .eq('email', email)
             .single();
 
-        if (error || !user) {
-            return res.status(400).json({ error: 'Credenciales inválidas.' });
-        }
+        if (!user) return res.status(400).json({ error: 'Credenciales inválidas' });
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ error: 'Credenciales inválidas.' });
-        }
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) return res.status(400).json({ error: 'Credenciales inválidas' });
 
-        const token = jwt.sign({ id: user.id, email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(
+            { id: user.id },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
 
-        res.status(200).json({message: 'Inicio de sesión exitoso!', token, nombre: user.nombre, apellido: user.apellido, rol: user.rol }); // rol agregado automáticamente a la respuesta
-    } catch (error) {
-        console.error('Server error:', error);
-        res.status(500).json({ error: 'Error interno del servidor.' });
+        res.json({ token, nombre: user.nombre, rol: user.rol });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error servidor' });
     }
 });
 
+// ======================
 // DESTINOS
+// ======================
 app.get('/destinos', async (req, res) => {
-    const { data, error } = await supabase.from('destinos').select('*');
-    if (error) return res.status(500).json(error);
+    const { data } = await supabase.from('destinos').select('*');
     res.json(data);
 });
 
 app.post('/destinos', async (req, res) => {
-    const { data, error } = await supabase.from('destinos').insert([req.body]);
-    if (error) return res.status(500).json(error);
+    const { data } = await supabase.from('destinos').insert([req.body]);
     res.json(data);
 });
 
 app.put('/destinos/:id', async (req, res) => {
-    const { id } = req.params;
-    const { data, error } = await supabase.from('destinos').update(req.body).eq('id', id);
-    if (error) return res.status(500).json(error);
+    const { data } = await supabase
+        .from('destinos')
+        .update(req.body)
+        .eq('id', req.params.id);
+
     res.json(data);
 });
 
 app.delete('/destinos/:id', async (req, res) => {
-    const { id } = req.params;
-    const { data, error } = await supabase.from('destinos').delete().eq('id', id);
-    if (error) return res.status(500).json(error);
-    res.json(data);
-});
+    const { data } = await supabase
+        .from('destinos')
+        .delete()
+        .eq('id', req.params.id);
 
-// PERFILES
-app.get('/perfiles', async (req, res) => {
-    const { data, error } = await supabase.from('perfiles').select('*');
-    if (error) return res.status(500).json(error);
     res.json(data);
 });
 
 // ======================
 // RESERVAS
 // ======================
-
-// Obtener todas las reservas
-app.get("/reservas", async (req, res) => {
-    try {
-        const { data, error } = await supabase
-            .from("reservas")
-            .select("*");
-
-        if (error) throw error;
-
-        res.json(data);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Error al obtener reservas" });
-    }
-});
-
-// Crear reserva
-app.post('/reservas', async (req, res) => {
-    const { data, error } = await supabase
-        .from('reservas')
-        .insert([req.body]);
-
-    if (error) return res.status(500).json(error);
+app.get('/reservas', async (req, res) => {
+    const { data } = await supabase.from('reservas').select('*');
     res.json(data);
 });
 
-// Editar reserva
-app.put('/reservas/:id', async (req, res) => {
-    const { id } = req.params;
+app.post('/reservas', async (req, res) => {
+    const { data } = await supabase.from('reservas').insert([req.body]);
+    res.json(data);
+});
 
-    const { data, error } = await supabase
+app.put('/reservas/:id', async (req, res) => {
+    const { data } = await supabase
         .from('reservas')
         .update(req.body)
-        .eq('id', id);
+        .eq('id', req.params.id);
 
-    if (error) return res.status(500).json(error);
     res.json(data);
 });
 
-// Eliminar reserva
 app.delete('/reservas/:id', async (req, res) => {
-    const { id } = req.params;
-
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from('reservas')
         .delete()
-        .eq('id', id);
+        .eq('id', req.params.id);
 
-    if (error) return res.status(500).json(error);
     res.json(data);
 });
 
-// SERVIR FRONTEND (AL FINAL)
-app.use(express.static(frontendDir));
+// ======================
+// CHAT IA 
+// ======================
+app.post('/chat', (req, res) => {
+    const { mensaje } = req.body;
 
-// console.log(autenticacionMiddleware);
+    if (!mensaje) {
+        return res.status(400).json({ respuesta: 'Mensaje vacío' });
+    }
+
+    if (!process.env.GROQ_API_KEY) {
+        return res.status(500).json({ respuesta: "Falta API KEY" });
+    }
+
+    const data = JSON.stringify({
+        model: "openai/gpt-oss-120b",
+        messages: [
+            {
+                role: "system",
+                content: "Eres Res, asistente turístico en Colombia. Responde corto, claro y en COP."
+            },
+            {
+                role: "user",
+                content: mensaje
+            }
+        ]
+    });
+
+    const options = {
+        hostname: 'api.groq.com',
+        path: '/openai/v1/chat/completions',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+            'Content-Length': Buffer.byteLength(data)
+        }
+    };
+
+    const reqIA = https.request(options, (resp) => {
+        let body = '';
+
+        resp.on('data', chunk => body += chunk);
+
+        resp.on('end', () => {
+            try {
+                const parsed = JSON.parse(body);
+
+                if (parsed.error) {
+                    console.error("Error Groq:", parsed.error);
+                    return res.status(500).json({ respuesta: "Error de IA" });
+                }
+
+                const reply =
+                    parsed?.choices?.[0]?.message?.content ||
+                    "No entendí tu pregunta 😅";
+
+                res.json({ respuesta: reply });
+
+            } catch (err) {
+                console.error("ERROR JSON:", body);
+                res.status(500).json({ respuesta: "Error procesando IA" });
+            }
+        });
+    });
+
+    reqIA.on('error', (err) => {
+        console.error("ERROR REQUEST:", err);
+        res.status(500).json({ respuesta: "Error IA" });
+    });
+
+    reqIA.write(data);
+    reqIA.end();
+});
