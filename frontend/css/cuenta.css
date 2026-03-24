@@ -1,0 +1,109 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.contenedor-perfil {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.btn-volver {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.tarjeta-usuario {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+    text-align: center;
+}
+
+.header-perfil {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    padding: 40px 20px;
+    color: white;
+}
+
+.foto-circulo img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 4px solid white;
+    margin-bottom: 15px;
+    background-color: #ddd;
+}
+
+.badge {
+    background: rgba(255,255,255,0.2);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.info-perfil {
+    padding: 30px;
+    text-align: left;
+}
+
+.campo {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.campo label {
+    font-size: 0.8rem;
+    color: #888;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.campo p {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.btn-editar {
+    width: 80%;
+    margin-bottom: 30px;
+    padding: 12px;
+    border: 2px solid #007bff;
+    background: transparent;
+    color: #007bff;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-editar:hover {
+    background: #007bff;
+    color: white;
+}
+
+.info-perfil input {
+    margin-top: 5px;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0,123,255,0.1);
+    transition: 0.3s;
+}
+
+.info-perfil input:focus {
+    border-color: #0056b3;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+}
+

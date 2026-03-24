@@ -100,7 +100,6 @@ function obtenerImagen(destino) {
 // ==============================
 function mostrarDestinos(lista) {
     const contenedor = document.getElementById("listaDestinos");
-
     if (!contenedor) return;
 
     contenedor.innerHTML = "";
@@ -110,14 +109,26 @@ function mostrarDestinos(lista) {
         return;
     }
 
+    // --- NUEVO: Leer configuración de moneda ---
+    const config = JSON.parse(localStorage.getItem('userConfig')) || { tasa: 1, simbolo: '$', moneda: 'COP' };
+    const tasa = config.tasa || 1;
+    const simbolo = config.simbolo || "$";
+
     lista.forEach(destino => {
         const imagen = obtenerImagen(destino);
+        
+        // Calcular precio convertido
+        const precioOriginal = Number(destino.precio || 0);
+        const precioConvertido = (precioOriginal * tasa).toLocaleString(undefined, {
+            minimumFractionDigits: config.moneda === 'JPY' ? 0 : 0,
+            maximumFractionDigits: config.moneda === 'JPY' ? 0 : 0
+        });
 
         contenedor.innerHTML += `
         <div class="card" onclick="verDetalle('${destino.id}')">
             <img src="${imagen}" alt="${destino.nombre}">
             <h3>${destino.nombre || "Sin nombre"}</h3>
-            <p>$ ${Number(destino.precio || 0).toLocaleString()}</p>
+            <p>${simbolo} ${precioConvertido} <small>${config.moneda || 'COP'}</small></p>
         </div>`;
     });
 }
@@ -133,10 +144,14 @@ function verDetalle(id) {
         return;
     }
 
-    document.getElementById("detalleNombre").textContent = destinoActual.nombre;
-    document.getElementById("detallePrecio").textContent =
-        "$ " + Number(destinoActual.precio || 0).toLocaleString();
+    // --- NUEVO: Aplicar conversión en el detalle ---
+    const config = JSON.parse(localStorage.getItem('userConfig')) || { tasa: 1, simbolo: '$', moneda: 'COP' };
+    const precioConvertido = (Number(destinoActual.precio || 0) * config.tasa).toLocaleString(undefined, {
+        minimumFractionDigits: config.moneda === 'JPY' ? 0 : 0
+    });
 
+    document.getElementById("detalleNombre").textContent = destinoActual.nombre;
+    document.getElementById("detallePrecio").textContent = `${config.simbolo} ${precioConvertido} ${config.moneda}`;
     // ==============================
     //  MANEJO DE IMÁGENES
     // ==============================
@@ -329,4 +344,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cargarDestinos();
     inicializarMenuUsuario(); 
+
+    
 });
+
+

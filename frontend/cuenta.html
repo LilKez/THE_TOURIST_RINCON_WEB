@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario - TravelApp</title>
+    <link rel="stylesheet" href="css/cuenta.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="contenedor-perfil">
+        <a href="index.html" class="btn-volver">
+            <i class="fas fa-chevron-left"></i> Volver al Inicio
+        </a>
+
+        <div class="tarjeta-usuario">
+            <div class="header-perfil">
+                <div class="foto-circulo">
+                    <img src="" id="userAvatar" alt="Avatar">
+                </div>
+                <h2 id="displayNombre">Cargando...</h2>
+                <span class="badge" id="displayRol">Viajero</span>
+            </div>
+
+            <div class="info-perfil">
+                <div class="campo">
+                    <label><i class="fas fa-user"></i> Nombre Completo</label>
+                    <p id="infoNombre">Cargando...</p>
+                </div>
+
+                <div class="campo">
+                    <label><i class="fas fa-envelope"></i> Correo Electrónico</label>
+                    <p id="infoEmail">Cargando...</p>
+                </div>
+
+                <div class="campo">
+                    <label><i class="fas fa-id-badge"></i> ID de Usuario</label>
+                    <p id="infoID">########</p>
+                </div>
+            </div>
+
+            <div class="footer-perfil">
+                
+                <button class="btn-editar" onclick="habilitarEdicion()">
+                   Editar Perfil
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        cargarDatos();
+    });
+
+    function cargarDatos() {
+        const nombre = localStorage.getItem('usuarioNombre');
+        const email = localStorage.getItem('usuarioEmail');
+        const idUser = localStorage.getItem('usuarioID');
+        const rol = localStorage.getItem('rol') || 'Viajero';
+
+        if (nombre) {
+            document.getElementById('displayNombre').innerText = nombre;
+            document.getElementById('displayRol').innerText = rol.toUpperCase();
+            document.getElementById('infoNombre').innerText = nombre;
+            document.getElementById('infoEmail').innerText = email;
+            document.getElementById('infoID').innerText = idUser;
+            
+            // Avatar con inicial
+            document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${nombre}&background=ffffff&color=007bff`;
+        }
+    }
+
+    function habilitarEdicion() {
+        const btnEditar = document.querySelector('.btn-editar');
+        const nombreElt = document.getElementById('infoNombre');
+        const emailElt = document.getElementById('infoEmail');
+
+        // SI YA ESTAMOS EN MODO GUARDAR
+        if (btnEditar.dataset.mode === "save") {
+            const nuevoNombre = document.getElementById('inputNombre').value;
+            const nuevoEmail = document.getElementById('inputEmail').value;
+
+            // Guardar en LocalStorage
+            localStorage.setItem('usuarioNombre', nuevoNombre);
+            localStorage.setItem('usuarioEmail', nuevoEmail);
+
+            // Actualizar interfaz
+            cargarDatos();
+            
+            // Restaurar botón
+            btnEditar.innerHTML = 'Editar Perfil';
+            btnEditar.style.background = "transparent";
+            btnEditar.style.color = "#007bff";
+            delete btnEditar.dataset.mode;
+            
+            alert("¡Perfil actualizado con éxito! ✨");
+            return;
+        }
+
+        // MODO EDICIÓN
+        const nombreActual = nombreElt.innerText;
+        const emailActual = emailElt.innerText;
+
+        // Estilo rápido para que el input no rompa tu diseño
+        const estiloInput = "width: 100%; border: 1px solid #007bff; border-radius: 5px; padding: 5px; font-family: inherit; font-size: 1rem; color: #333;";
+
+        nombreElt.innerHTML = `<input type="text" id="inputNombre" value="${nombreActual}" style="${estiloInput}">`;
+        emailElt.innerHTML = `<input type="email" id="inputEmail" value="${emailActual}" style="${estiloInput}">`;
+
+        // Cambiar apariencia del botón
+        btnEditar.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
+        btnEditar.style.background = "#007bff";
+        btnEditar.style.color = "white";
+        btnEditar.dataset.mode = "save";
+    }
+</script>
+</body>
+</html>
