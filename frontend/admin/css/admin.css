@@ -1,488 +1,994 @@
-/* FONDO GENERAL */
+/* ======================
+   ADMIN DASHBOARD - DISEÑO MODERNO
+   ====================== */
+
+/* Reset y variables */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #00c6ff;
+    --primary-dark: #0072ff;
+    --secondary: #ff416c;
+    --dark: #0f2027;
+    --darker: #0a0f1a;
+    --gray: #1e293b;
+    --light-gray: #334155;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-hover: rgba(255, 255, 255, 0.1);
+    --border: rgba(38, 198, 218, 0.2);
+}
+
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    font-family: 'Segoe UI', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #0a0f1a 0%, #0f172a 50%, #1e293b 100%);
+    min-height: 100vh;
+    color: var(--text);
 }
 
-/* PANEL */
+/* Eliminar fondos duplicados */
+body::before,
+body::after {
+    display: none !important;
+}
+
+/* ======================
+   HEADER
+   ====================== */
+.main-nav {
+    background: rgba(10, 15, 26, 0.95);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-brand .logo {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.header-brand .logo-text h1 {
+    font-size: 1.1rem;
+    margin: 0;
+    color: white;
+}
+
+.header-brand .logo-text span {
+    font-size: 0.7rem;
+    color: var(--primary);
+}
+
+.btn-inicio {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: var(--glass);
+    border-radius: 40px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.btn-inicio:hover {
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    -webkit-transform: translateY(-2px);
+    transform: translateY(-2px);
+}
+
+.btn-login-modern {
+    background: linear-gradient(90deg, var(--secondary), #ff4b2b);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 40px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.btn-login-modern:hover {
+    -webkit-transform: translateY(-2px);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+}
+
+/* ======================
+   DASHBOARD LAYOUT
+   ====================== */
 .admin-panel {
     display: flex;
-    min-height: calc(100vh - 80px);
+    min-height: calc(100vh - 65px);
 }
 
-/* SIDEBAR */
+/* SIDEBAR - Estilo moderno */
 .sidebar {
-    width: 260px;
-    background: rgba(15, 32, 39, 0.95);
-    padding: 25px 20px;
-    border-right: 1px solid rgba(255,255,255,0.1);
+    width: 280px;
+    background: rgba(10, 15, 26, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid var(--border);
+    padding: 2rem 1rem;
+    flex-shrink: 0;
 }
 
 .sidebar h3 {
-    color: #00c6ff;
-    margin-bottom: 20px;
+    color: var(--primary);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
 }
 
-/* LINKS SIDEBAR */
 .sidebar ul {
     list-style: none;
     padding: 0;
 }
 
 .sidebar li {
-    margin-bottom: 10px;
+    margin-bottom: 0.5rem;
 }
 
 .sidebar a {
     text-decoration: none;
-    color: #ddd;
-    display: block;
-    padding: 12px;
-    border-radius: 8px;
-    transition: 0.3s;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    transition: all 0.2s;
+    font-weight: 500;
+    font-size: 0.9rem;
 }
 
-.sidebar a:hover {
-    background: linear-gradient(90deg, #00c6ff, #0072ff);
-    color: white;
-    transform: translateX(5px);
+.sidebar a i {
+    width: 22px;
+    font-size: 1.1rem;
 }
 
-/* CONTENIDO */
+.sidebar a:hover,
+.sidebar a.active {
+    background: linear-gradient(90deg, rgba(0, 198, 255, 0.1), rgba(0, 114, 255, 0.05));
+    color: var(--primary);
+}
+
+.sidebar a.active {
+    border-left: 3px solid var(--primary);
+    background: linear-gradient(90deg, rgba(0, 198, 255, 0.15), transparent);
+}
+
+/* CONTENIDO PRINCIPAL */
 .content {
     flex: 1;
-    padding: 30px;
+    padding: 2rem;
+    overflow-x: auto;
 }
 
-/* TITULOS */
-.content h2 {
-    color: #fff;
-    margin-bottom: 15px;
-}
-
-/* SECCIONES */
 .seccion {
     display: none;
+    animation: fadeIn 0.3s ease;
 }
 
 .seccion.activa {
     display: block;
 }
 
-/* GRID */
-#listaDestinosAdmin {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        -webkit-transform: translateY(10px);
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
 }
 
-/* CARDS */
+/* ======================
+   HEADER DE SECCIÓN
+   ====================== */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #fff, var(--primary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.btn-add {
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    border: none;
+    padding: 10px 24px;
+    border-radius: 40px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-add:hover {
+    -webkit-transform: translateY(-2px);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 198, 255, 0.4);
+}
+
+/* ======================
+   ESTADÍSTICAS (KPI CARDS)
+   ====================== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s;
+}
+
+.stat-card:hover {
+    -webkit-transform: translateY(-3px);
+    transform: translateY(-3px);
+    background: var(--glass-hover);
+    border-color: rgba(38, 198, 218, 0.4);
+}
+
+.stat-card i {
+    font-size: 2.2rem;
+}
+
+.stat-card.total i { color: var(--primary); }
+.stat-card.pendiente i { color: #f59e0b; }
+.stat-card.confirmada i { color: #10b981; }
+.stat-card.completada i { color: #8b5cf6; }
+
+.stat-card h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+}
+
+.stat-card p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ======================
+   DESTINOS GRID
+   ====================== */
+.destinos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
 .destino-card {
-    background: rgba(255,255,255,0.95);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-    transition: 0.3s;
-    position: relative;
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
     overflow: hidden;
+    transition: all 0.3s;
 }
 
 .destino-card:hover {
-    transform: translateY(-5px) scale(1.02);
+    -webkit-transform: translateY(-5px);
+    transform: translateY(-5px);
+    border-color: rgba(38, 198, 218, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.destino-card h3 {
-    margin-top: 0;
-    color: #0072ff;
+.card-header {
+    background: linear-gradient(135deg, rgba(0, 198, 255, 0.2), rgba(0, 114, 255, 0.1));
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
 }
 
-.destino-card p {
-    font-size: 0.9rem;
-    color: #444;
-}
-
-/* BOTONES CARD */
-.destino-card button {
-    margin: 5px 5px 0 0;
-    padding: 7px 12px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+.card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
     color: white;
+}
+
+.precio-badge {
+    background: rgba(38, 198, 218, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.descripcion {
+    padding: 1rem 1.25rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+}
+
+.card-details {
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.card-details span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.card-details i {
+    color: var(--primary);
+    width: 14px;
+    font-size: 0.7rem;
+}
+
+.card-buttons {
+    padding: 1rem 1.25rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.card-buttons button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
     font-size: 0.8rem;
+    transition: all 0.2s;
 }
 
-/* BOTONES */
 .edit-btn {
-    background: linear-gradient(90deg, #00c6ff, #0072ff);
-}
-
-.edit-btn:hover {
-    opacity: 0.85;
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    color: white;
 }
 
 .delete-btn {
-    background: linear-gradient(90deg, #ff416c, #ff4b2b);
-}
-
-.delete-btn:hover {
-    opacity: 0.85;
-}
-
-/* BOTON GENERAL */
-button {
-    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    background: linear-gradient(90deg, var(--secondary), #ff4b2b);
     color: white;
+}
+
+.card-buttons button:hover {
+    -webkit-transform: translateY(-2px);
+    transform: translateY(-2px);
+}
+
+/* ======================
+   USUARIOS GRID
+   ====================== */
+.usuarios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.usuario-card {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s;
+}
+
+.usuario-card:hover {
+    background: var(--glass-hover);
+    -webkit-transform: translateX(5px);
+    transform: translateX(5px);
+}
+
+.usuario-avatar i {
+    font-size: 2.5rem;
+    color: var(--primary);
+}
+
+.usuario-info {
+    flex: 1;
+}
+
+.usuario-info h3 {
+    margin: 0 0 4px 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: white;
+}
+
+.usuario-info p {
+    margin: 0 0 6px 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.rol {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.rol.admin {
+    background: linear-gradient(90deg, var(--secondary), #ff4b2b);
+    color: white;
+}
+
+.rol.cliente {
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    color: white;
+}
+
+/* ======================
+   TABLA RESERVAS
+   ====================== */
+.tabla-container {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+.tabla-reservas {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.tabla-reservas th {
+    text-align: left;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tabla-reservas td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.85rem;
+}
+
+.tabla-reservas tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.estado-select {
+    padding: 5px 10px;
+    border-radius: 20px;
     border: none;
-    padding: 10px 18px;
+    font-weight: 500;
+    font-size: 0.75rem;
+    cursor: pointer;
+    background: var(--gray);
+    color: white;
+}
+
+.estado-select.pendiente { background: #f59e0b; color: #1a1a2e; }
+.estado-select.confirmada { background: #10b981; color: white; }
+.estado-select.cancelada { background: #ef4444; color: white; }
+.estado-select.completada { background: #8b5cf6; color: white; }
+
+.acciones {
+    display: flex;
+    gap: 8px;
+}
+
+.acciones button {
+    padding: 6px;
+    border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.2s;
+    background: var(--glass);
+    color: white;
 }
 
-button:hover {
+.acciones button:hover {
+    -webkit-transform: scale(1.05);
     transform: scale(1.05);
-    opacity: 0.9;
 }
 
-/* MODAL */
+.view-btn { background: #3b82f6; }
+.view-btn:hover { background: #2563eb; }
+
+.delete-btn { background: #ef4444; }
+.delete-btn:hover { background: #dc2626; }
+
+.precio-total {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* ======================
+   MODAL
+   ====================== */
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.8);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
-/* MODAL BOX */
+.modal.oculto {
+    display: none;
+}
+
 .modal-content {
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    width: 500px;
-    max-width: 90%;
-    animation: aparecer 0.3s ease;
+    background: var(--darker);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 550px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
 }
 
-@keyframes aparecer {
+@keyframes slideUp {
     from {
         opacity: 0;
-        transform: scale(0.8);
+        -webkit-transform: translateY(30px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
-        transform: scale(1);
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
     }
 }
 
-/* FORM */
+.modal-content h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--primary);
+    font-size: 1.3rem;
+}
+
 .form-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 15px;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .modal-content label {
     display: block;
-    font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
 }
 
 .modal-content input,
 .modal-content textarea {
     width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: white;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus {
+    outline: none;
+    border-color: var(--primary);
 }
 
 .modal-content textarea {
     min-height: 80px;
+    resize: vertical;
 }
 
-/* BOTONES FORM */
 .form-buttons {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
-.form-buttons button:last-child {
-    background: #ccc;
-    color: #333;
+.form-buttons button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
 }
 
-/* TABLA RESERVAS */
+.form-buttons button[type="submit"] {
+    background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+    color: white;
+}
+
+.form-buttons button[type="button"] {
+    background: var(--gray);
+    color: white;
+}
+
+.form-buttons button:hover {
+    -webkit-transform: translateY(-2px);
+    transform: translateY(-2px);
+}
+
+/* ======================
+   ESTADOS DE CARGA
+   ====================== */
+.loading, .empty-state, .error-state {
+    text-align: center;
+    padding: 3rem;
+    background: var(--glass);
+    border-radius: 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.loading {
+    color: var(--primary);
+}
+
+.error-state {
+    color: var(--secondary);
+}
+
+/* ======================
+   RESPONSIVE
+   ====================== */
+@media (max-width: 768px) {
+    .admin-panel {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 1rem;
+    }
+    
+    .sidebar ul {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .sidebar li {
+        flex: 1;
+        margin-bottom: 0;
+    }
+    
+    .sidebar a {
+        justify-content: center;
+        padding: 10px;
+        font-size: 0.8rem;
+    }
+    
+    .content {
+        padding: 1rem;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .destinos-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .usuarios-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        padding: 1.5rem;
+    }
+    
+    .card-buttons {
+        flex-direction: column;
+    }
+}
+
+/* Badge para el usuario actual */
+.you-badge {
+    display: inline-block;
+    background: rgba(38, 198, 218, 0.2);
+    color: #26c6da;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 8px;
+    font-weight: normal;
+}
+
+/* Acciones del usuario */
+.usuario-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.usuario-actions button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.usuario-actions .delete-btn {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+}
+
+.usuario-actions .delete-btn:hover {
+    background: rgba(255, 107, 107, 0.3);
+    transform: scale(1.05);
+}
+
+/* ======================
+   ESTILOS MEJORADOS PARA TABLA DE RESERVAS
+   ====================== */
+
 .tabla-container {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
     overflow-x: auto;
-    background: rgba(255,255,255,0.95);
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 20px;
+    margin-top: 1rem;
 }
 
 .tabla-reservas {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9rem;
-}
-
-.tabla-reservas th,
-.tabla-reservas td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+    min-width: 900px;
 }
 
 .tabla-reservas th {
-    background: linear-gradient(90deg, #00c6ff, #0072ff);
-    color: white;
+    text-align: left;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--primary);
     font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tabla-reservas td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.85rem;
+    vertical-align: middle;
 }
 
 .tabla-reservas tr:hover {
-    background: rgba(0,198,255,0.1);
+    background: rgba(255, 255, 255, 0.03);
 }
 
-/* ESTADOS */
-.estado {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.estado.pendiente {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.estado.confirmada {
-    background: #d1ecf1;
-    color: #0c5460;
-}
-
-.estado.cancelada {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.estado.completada {
-    background: #d4edda;
-    color: #155724;
-}
-
-/* ACCIONES */
-.acciones {
+/* Estilos por tipo de celda */
+.cliente-cell .cliente-info {
     display: flex;
-    gap: 5px;
+    align-items: center;
+    gap: 8px;
 }
 
-.acciones button {
-    padding: 6px 10px;
+.cliente-cell .cliente-info i {
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.destino-cell .destino-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.destino-cell .destino-info i {
+    color: var(--primary);
+}
+
+.estado-select {
+    padding: 6px 12px;
+    border-radius: 20px;
     border: none;
-    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.75rem;
     cursor: pointer;
-    font-size: 0.8rem;
+    background: var(--gray);
+    color: white;
+    transition: all 0.2s;
 }
 
-.acciones .edit-btn {
-    background: linear-gradient(90deg, #00c6ff, #0072ff);
+.estado-select:hover {
+    transform: scale(1.02);
+}
+
+.estado-select.pendiente { 
+    background: #f59e0b; 
+    color: #1a1a2e;
+}
+.estado-select.confirmada { 
+    background: #10b981; 
+    color: white;
+}
+.estado-select.cancelada { 
+    background: #ef4444; 
+    color: white;
+}
+.estado-select.completada { 
+    background: #8b5cf6; 
     color: white;
 }
 
-.acciones .delete-btn {
-    background: linear-gradient(90deg, #ff416c, #ff4b2b);
-    color: white;
+.acciones-cell {
+    display: flex;
+    gap: 8px;
 }
-/* ======================
-   BOTON DE VOLVER A INICIO 
-   ======================*/
 
-/* BOTON INICIO MODERNO */
-.btn-inicio {
+.acciones-cell button {
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--glass);
+    color: white;
+    width: 32px;
+    height: 32px;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-radius: 20px;
-    background: rgba(255,255,255,0.1);
-    color: white !important;
-    font-weight: 500;
-    text-decoration: none;
-    transition: 0.3s;
+    justify-content: center;
 }
 
-/* HOVER */
-.btn-inicio:hover {
-    background: linear-gradient(90deg, #00c6ff, #0072ff);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+.acciones-cell button:hover {
+    transform: scale(1.1);
 }
 
-/* ICONO */
-.btn-inicio i {
-    font-size: 0.9rem;
+.acciones-cell .view-btn { 
+    background: #3b82f6; 
+}
+.acciones-cell .view-btn:hover { 
+    background: #2563eb; 
 }
 
-/* HEADER FIX */
-header .header-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.acciones-cell .delete-btn { 
+    background: #ef4444; 
+}
+.acciones-cell .delete-btn:hover { 
+    background: #dc2626; 
 }
 
-header .logo {
-    width: 120px;
-    height: 70px;
-    border-radius: 20px;
+.precio-cell {
+    font-weight: 600;
+    color: var(--primary);
 }
 
-header .logo-text h1 {
-    font-size: 1rem;
-    margin: 0;
-    color: white;
-}
-
-header .logo-text span {
-    font-size: 0.7rem;
-    color: #ccc;
-}
-
-/* OCULTO */
-.oculto {
-    display: none !important;
-}
-
-/* ======================== 
-   LO DE GESTION DE PERFILE (USUARIOS) 
-   ======================== */
-/* GRID USUARIOS */
-.usuarios-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
-
-/* CARD USUARIO */
-.usuario-card {
-    background: rgba(255,255,255,0.95);
-    padding: 18px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-    transition: 0.3s;
-}
-
-.usuario-card:hover {
-    transform: translateY(-5px) scale(1.02);
-}
-
-/* TEXTO */
-.usuario-card h3 {
-    margin: 0;
-    color: #0072ff;
-}
-
-.usuario-card p {
-    margin: 5px 0;
-    font-size: 0.9rem;
-    color: #444;
-}
-
-/* ROL */
-.rol {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    margin-top: 8px;
-    color: white;
-}
-
-/* COLORES */
-.rol.admin {
-    background: linear-gradient(90deg, #ff416c, #ff4b2b);
-}
-
-.rol.cliente {
-    background: linear-gradient(90deg, #00c6ff, #0072ff);
-}
-
-/* ===============
-   LO DE RESERVAS 
-   =============== */
-.tabla-container {
-    margin-top: 20px;
-    overflow-x: auto;
-}
-
-.tabla-reservas {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.tabla-reservas th {
-    background: #0072ff;
-    color: white;
-    padding: 12px;
-    text-align: left;
-}
-
-.tabla-reservas td {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-}
-
-.tabla-reservas tr:hover {
-    background: #f5f5f5;
-}
-
-/* ESTADOS */
-.estado {
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    color: white;
-}
-
-.estado.pendiente {
-    background: orange;
-}
-
-.estado.confirmada {
-    background: green;
-}
-
-.estado.cancelada {
-    background: red;
-}
-
-/* ACCIONES */
-.acciones {
-    display: flex;
-    gap: 8px;
-}
-
-.acciones button {
-    padding: 6px 10px;
-    border-radius: 6px;
-}
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
+/* Responsive para tabla */
+@media (max-width: 768px) {
+    .tabla-container {
+        border-radius: 16px;
+    }
+    
+    .tabla-reservas th,
+    .tabla-reservas td {
+        padding: 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .acciones-cell button {
+        width: 28px;
+        height: 28px;
+    }
 }

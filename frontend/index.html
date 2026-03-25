@@ -43,10 +43,7 @@
                     </button>
 
                     <div id="accountMenu" class="account-menu oculto">
-                        <a href="#">Mi cuenta</a>                
-                        <a href="#">Configuración</a>
-                        <hr>
-                        <a href="#" class="logout">Cerrar sesión</a>
+                        <!-- El contenido se llena dinámicamente con JavaScript -->
                     </div>
                 </div>
             </div>
@@ -99,8 +96,6 @@
     <button class="cerrar" onclick="cerrarDetalle()">✕</button>
 
     <div class="galeria">
-
-        <!-- IMAGEN PRINCIPAL (con fallback) -->
         <div class="imagen-principal">
             <img id="detalleImagen" src="https://via.placeholder.com/500" alt="Destino">
             <div class="titulo-overlay">
@@ -110,11 +105,10 @@
 
         <!--MINIATURAS (con fallback) -->
         <div class="miniaturas">
-            <img id="mini1" src="https://via.placeholder.com/100" onclick="cambiarImagen(this)">
-            <img id="mini2" src="https://via.placeholder.com/100" onclick="cambiarImagen(this)">
-            <img id="mini3" src="https://via.placeholder.com/100" onclick="cambiarImagen(this)">
+            <img id="mini1" src="" alt="Vista del destino 1" title="Miniatura 1" onclick="cambiarImagen(this)" onerror="this.src=''">
+            <img id="mini2" src="" alt="Vista del destino 2" title="Miniatura 2" onclick="cambiarImagen(this)" onerror="this.src=''">
+            <img id="mini3" src="" alt="Vista del destino 3" title="Miniatura 3" onclick="cambiarImagen(this)" onerror="this.src=''">
         </div>
-
     </div>
 
     <div class="detalle-info">
@@ -138,19 +132,24 @@
     </div>
 </section>
 
-<!-- MODAL LOGIN -->
-<div id="modalLoginReq" class="modal-login modal-reservar oculto">
-    <div class="modal-login-contenido">
-        <h2>Inicio de sesión requerido</h2>
-        <p>Para reservar un viaje debes iniciar sesión.</p>
-
-        <form id="loginModalForm">
-            <input id="modalEmail" type="email" required>
-            <input id="modalPassword" type="password" required>
-            <button type="submit">Ingresar</button>
-        </form>
-
-        <button onclick="cerrarLoginReq()">Cancelar</button>
+<!-- MODAL DE AUTENTICACIÓN (ELEGANTE) -->
+<div id="modalLoginReq" class="modal-reservar oculto">
+    <div class="modal-reservar-contenido">
+        <h2>🔐 Inicio de sesión requerido</h2>
+        <p>Para reservar este viaje, necesitas tener una cuenta.</p>
+        
+        <div class="modal-login-botones">
+            <button class="btn-login" onclick="irALogin()">
+                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+            </button>
+            <button class="btn-registro" onclick="irARegistro()">
+                <i class="fas fa-user-plus"></i> Crear cuenta
+            </button>
+        </div>
+        
+        <div class="nota">
+            ¿Prefieres explorar? <a href="#" onclick="cerrarModalAuth(); return false;">Seguir como invitado</a>
+        </div>
     </div>
 </div>
 
@@ -169,11 +168,18 @@
     <div class="modal-content">
         <h3>Reservar <span id="reservaDestinoNombre"></span></h3>
         <form id="formReserva">
+            <label for="reservaFecha">Fecha del viaje</label>
             <input type="date" id="reservaFecha" required>
-            <input type="number" id="reservaPersonas" required>
-            <textarea id="reservaNotas"></textarea>
-            <button type="submit">Confirmar</button>
+            
+            <label for="reservaPersonas">Número de personas</label>
+            <input type="number" id="reservaPersonas" min="1" max="20" required>
+            
+            <label for="reservaNotas">Notas adicionales</label>
+            <textarea id="reservaNotas" placeholder="Alguna solicitud especial..."></textarea>
+            
+            <button type="submit">Confirmar reserva</button>
         </form>
+        <button type="button" onclick="cerrarModalReserva()">Cancelar</button>
     </div>
 </div>
 

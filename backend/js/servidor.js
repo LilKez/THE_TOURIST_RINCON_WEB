@@ -3,7 +3,6 @@ require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') }
 
 const express = require('express');
 const cors = require('cors');
-// const bcrypt = require('bcryptjs'); // ❌ COMENTAR bcrypt - ya no lo usaremos
 const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
 const https = require('https');
@@ -68,13 +67,12 @@ app.post('/registrar', async (req, res) => {
             return res.status(409).json({ error: 'Email ya registrado' });
         }
 
-        // 🔥 GUARDAR EN TEXTO PLANO (sin hashear)
         const { error: insertError } = await supabase.from('perfiles').insert([
             { 
                 nombre, 
                 apellido, 
                 email, 
-                password: password, // Texto plano
+                password: password,
                 rol: 'cliente' 
             }
         ]);
@@ -97,8 +95,6 @@ app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         
-        console.log("🔐 Intento de login para:", email);
-
         const { data: user, error } = await supabase
             .from('perfiles')
             .select('*')
@@ -106,16 +102,10 @@ app.post('/login', async (req, res) => {
             .single();
 
         if (error || !user) {
-            console.log("❌ Usuario no encontrado");
             return res.status(400).json({ error: 'Credenciales inválidas' });
         }
 
-        console.log("✅ Usuario encontrado:", user.email);
-        console.log("👤 Rol en BD:", user.rol); // ← Ver qué rol tiene
-
-        // Comparar contraseña (texto plano)
         if (user.password !== password) {
-            console.log("❌ Contraseña incorrecta");
             return res.status(400).json({ error: 'Credenciales inválidas' });
         }
 
@@ -124,19 +114,18 @@ app.post('/login', async (req, res) => {
                 id: user.id,
                 email: user.email,
                 nombre: user.nombre,
-                rol: user.rol || 'cliente'  // ← Asegurar que rol se guarda
+                rol: user.rol || 'cliente'
             },
             process.env.JWT_SECRET || 'mi-secreto-temporal-para-desarrollo',
             { expiresIn: '24h' }
         );
 
-        console.log("✅ Login exitoso. Rol enviado:", user.rol || 'cliente');
-
         res.json({ 
             token, 
             nombre: user.nombre,
-            rol: user.rol || 'cliente',  // ← Enviar rol correcto
-            email: user.email
+            rol: user.rol || 'cliente',
+            email: user.email,
+            id: user.id  // ← AGREGAR ESTA LÍNEA
         });
 
     } catch (err) {
@@ -161,6 +150,49 @@ app.get('/perfiles', async (req, res) => {
     } catch (err) {
         console.error('Error al obtener perfiles:', err);
         res.status(500).json({ error: 'Error al obtener usuarios' });
+    }
+});
+
+// ======================
+// ELIMINAR USUARIO
+// ======================
+app.delete('/perfiles/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Verificar que no sea el último administrador
+        const { data: admins, error: countError } = await supabase
+            .from('perfiles')
+            .select('id')
+            .eq('rol', 'administrador');
+        
+        if (countError) throw countError;
+        
+        // Obtener el usuario a eliminar
+        const { data: userToDelete, error: userError } = await supabase
+            .from('perfiles')
+            .select('rol')
+            .eq('id', id)
+            .single();
+        
+        if (userError) throw userError;
+        
+        // Si es administrador y es el único, no permitir eliminar
+        if (userToDelete.rol === 'administrador' && admins.length === 1) {
+            return res.status(400).json({ error: 'No se puede eliminar el único administrador del sistema' });
+        }
+        
+        const { data, error } = await supabase
+            .from('perfiles')
+            .delete()
+            .eq('id', id);
+        
+        if (error) throw error;
+        
+        res.json({ message: 'Usuario eliminado correctamente' });
+    } catch (err) {
+        console.error('Error al eliminar usuario:', err);
+        res.status(500).json({ error: 'Error al eliminar usuario' });
     }
 });
 
