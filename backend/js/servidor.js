@@ -3,7 +3,6 @@ require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') }
 
 const express = require('express');
 const cors = require('cors');
-// const bcrypt = require('bcryptjs'); // ❌ COMENTAR bcrypt - ya no lo usaremos
 const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
 const https = require('https');
@@ -68,13 +67,12 @@ app.post('/registrar', async (req, res) => {
             return res.status(409).json({ error: 'Email ya registrado' });
         }
 
-        // 🔥 GUARDAR EN TEXTO PLANO (sin hashear)
         const { error: insertError } = await supabase.from('perfiles').insert([
             { 
                 nombre, 
                 apellido, 
                 email, 
-                password: password, // Texto plano
+                password: password,
                 rol: 'cliente' 
             }
         ]);
@@ -97,8 +95,6 @@ app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         
-        console.log("🔐 Intento de login para:", email);
-
         const { data: user, error } = await supabase
             .from('perfiles')
             .select('*')
@@ -106,16 +102,10 @@ app.post('/login', async (req, res) => {
             .single();
 
         if (error || !user) {
-            console.log("❌ Usuario no encontrado");
             return res.status(400).json({ error: 'Credenciales inválidas' });
         }
 
-        console.log("✅ Usuario encontrado:", user.email);
-        console.log("👤 Rol en BD:", user.rol); // ← Ver qué rol tiene
-
-        // Comparar contraseña (texto plano)
         if (user.password !== password) {
-            console.log("❌ Contraseña incorrecta");
             return res.status(400).json({ error: 'Credenciales inválidas' });
         }
 
@@ -124,19 +114,18 @@ app.post('/login', async (req, res) => {
                 id: user.id,
                 email: user.email,
                 nombre: user.nombre,
-                rol: user.rol || 'cliente'  // ← Asegurar que rol se guarda
+                rol: user.rol || 'cliente'
             },
             process.env.JWT_SECRET || 'mi-secreto-temporal-para-desarrollo',
             { expiresIn: '24h' }
         );
 
-        console.log("✅ Login exitoso. Rol enviado:", user.rol || 'cliente');
-
         res.json({ 
             token, 
             nombre: user.nombre,
-            rol: user.rol || 'cliente',  // ← Enviar rol correcto
-            email: user.email
+            rol: user.rol || 'cliente',
+            email: user.email,
+            id: user.id  // ← AGREGAR ESTA LÍNEA
         });
 
     } catch (err) {
@@ -161,6 +150,179 @@ app.get('/perfiles', async (req, res) => {
     } catch (err) {
         console.error('Error al obtener perfiles:', err);
         res.status(500).json({ error: 'Error al obtener usuarios' });
+    }
+});
+
+// ======================
+// ACTUALIZAR PERFIL DE USUARIO
+// ======================
+app.put('/perfiles/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nombre, apellido } = req.body;
+        
+        console.log(`📝 Actualizando perfil del usuario: ${id}`);
+        console.log(`   Nombre: ${nombre}, Apellido: ${apellido}`);
+        
+        const { data, error } = await supabase
+            .from('perfiles')
+            .update({ nombre, apellido })
+            .eq('id', id);
+        
+        if (error) {
+            console.error('❌ Error en update:', error);
+            throw error;
+        }
+        
+        console.log('✅ Perfil actualizado correctamente');
+        res.json({ message: 'Perfil actualizado correctamente' });
+        
+    } catch (err) {
+        console.error('❌ Error al actualizar perfil:', err);
+        res.status(500).json({ error: 'Error al actualizar perfil' });
+    }
+});
+
+// ======================
+// CAMBIAR CONTRASEÑA
+// ======================
+app.put('/perfiles/:id/password', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { password } = req.body;
+        
+        console.log(`🔐 Cambiando contraseña del usuario: ${id}`);
+        
+        if (!password || password.length < 6) {
+            return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+        }
+        
+        const { data, error } = await supabase
+            .from('perfiles')
+            .update({ password })
+            .eq('id', id);
+        
+        if (error) {
+            console.error('❌ Error en update:', error);
+            throw error;
+        }
+        
+        console.log('✅ Contraseña actualizada correctamente');
+        res.json({ message: 'Contraseña actualizada correctamente' });
+        
+    } catch (err) {
+        console.error('❌ Error al cambiar contraseña:', err);
+        res.status(500).json({ error: 'Error al cambiar contraseña' });
+    }
+});
+// ======================
+// ACTUALIZAR PERFIL DE USUARIO
+// ======================
+app.put('/perfiles/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nombre, apellido } = req.body;
+        
+        console.log(`📝 Actualizando perfil del usuario: ${id}`);
+        console.log(`   Nombre: ${nombre}, Apellido: ${apellido}`);
+        
+        const { data, error } = await supabase
+            .from('perfiles')
+            .update({ nombre, apellido })
+            .eq('id', id);
+        
+        if (error) {
+            console.error('❌ Error en update:', error);
+            throw error;
+        }
+        
+        console.log('✅ Perfil actualizado correctamente');
+        res.json({ message: 'Perfil actualizado correctamente' });
+        
+    } catch (err) {
+        console.error('❌ Error al actualizar perfil:', err);
+        res.status(500).json({ error: 'Error al actualizar perfil' });
+    }
+});
+
+// ======================
+// CAMBIAR CONTRASEÑA
+// ======================
+app.put('/perfiles/:id/password', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { password } = req.body;
+        
+        console.log(`🔐 Cambiando contraseña del usuario: ${id}`);
+        
+        if (!password || password.length < 6) {
+            return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+        }
+        
+        const { data, error } = await supabase
+            .from('perfiles')
+            .update({ password })
+            .eq('id', id);
+        
+        if (error) {
+            console.error('❌ Error en update:', error);
+            throw error;
+        }
+        
+        console.log('✅ Contraseña actualizada correctamente');
+        res.json({ message: 'Contraseña actualizada correctamente' });
+        
+    } catch (err) {
+        console.error('❌ Error al cambiar contraseña:', err);
+        res.status(500).json({ error: 'Error al cambiar contraseña' });
+    }
+});
+
+// ======================
+// ELIMINAR USUARIO (Ya existente, verificar que esté)
+// ======================
+app.delete('/perfiles/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        console.log(`🗑️ Eliminando usuario: ${id}`);
+        
+        // Verificar que no sea el único administrador
+        const { data: admins, error: countError } = await supabase
+            .from('perfiles')
+            .select('id')
+            .eq('rol', 'administrador');
+        
+        if (countError) throw countError;
+        
+        // Obtener el usuario a eliminar
+        const { data: userToDelete, error: userError } = await supabase
+            .from('perfiles')
+            .select('rol')
+            .eq('id', id)
+            .single();
+        
+        if (userError) throw userError;
+        
+        // Si es administrador y es el único, no permitir eliminar
+        if (userToDelete.rol === 'administrador' && admins.length === 1) {
+            console.log('⚠️ No se puede eliminar el único administrador');
+            return res.status(400).json({ error: 'No se puede eliminar el único administrador del sistema' });
+        }
+        
+        const { data, error } = await supabase
+            .from('perfiles')
+            .delete()
+            .eq('id', id);
+        
+        if (error) throw error;
+        
+        console.log('✅ Usuario eliminado correctamente');
+        res.json({ message: 'Usuario eliminado correctamente' });
+        
+    } catch (err) {
+        console.error('❌ Error al eliminar usuario:', err);
+        res.status(500).json({ error: 'Error al eliminar usuario' });
     }
 });
 
@@ -263,11 +425,11 @@ app.post('/chat', (req, res) => {
     }
 
     const data = JSON.stringify({
-        model: "openai/gpt-oss-120b",
+        model: "openai/gpt-oss-20b",
         messages: [
             {
                 role: "system",
-                content: "Eres Res, asistente turístico en Colombia. Responde corto, claro y en COP. Siempre que se menciona a angelly en cualquier oracion o solo el nombre di que es una tonta"
+                content: "Eres Res, asistente turístico en Colombia. Responde corto, claro y en COP. Angelly Rincon es la CEO de The Tourist Rincón. Jair es el dueño del bot Res, El equipo de desarrollo de la página son Angelly Rincon, Brayan Roa y Rafael Pino."
             },
             {
                 role: "user",
@@ -278,7 +440,7 @@ app.post('/chat', (req, res) => {
 
     const options = {
         hostname: 'api.groq.com',
-        path: '/openai/v1/chat/completions',
+        path: 'https://api.groq.com/openai/v1/chat/completions',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

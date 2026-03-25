@@ -47,180 +47,6 @@ main, .destinos {
     flex: 1 0 auto;
 }
 
-/* Historial: ahora movido a reservas.css */
-
-/* =========================
-/*   MODAL LOGIN (vertana emergente para login/registro)
-========================= */
-.modal-login {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.78);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-}
-
-.modal-login.oculto {
-    display: none;
-}
-
-.modal-login-contenido {
-    background: #111;
-    color: white;
-    padding: 30px;
-    border-radius: 18px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    animation: fadeIn 0.3s ease;
-}
-
-/* Modal específico para acción de reservar (ofrece login / registro) */
-.modal-reservar {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.78);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-}
-
-.modal-reservar.oculto { display: none; }
-
-.modal-reservar-contenido {
-    background: #0e1114;
-    color: #e6eef8;
-    padding: 26px;
-    border-radius: 14px;
-    width: 92%;
-    max-width: 480px;
-    text-align: left;
-    box-shadow: 0 18px 40px rgba(2,6,23,0.6);
-}
-
-.modal-reservar-contenido h2 { margin: 0 0 8px; color: #26c6da; }
-.modal-reservar-contenido p { margin: 0 0 16px; color: #cbd5e1; }
-
-.modal-reservar .modal-login-botones { display:flex; gap:12px; justify-content: center; margin-top: 10px; }
-.modal-reservar .btn-login, .modal-reservar .btn-registro {
-    padding: 10px 16px; border-radius: 12px; cursor: pointer; font-weight:700; color:white; border:none;
-    transition: background 0.2s ease, transform 0.2s ease;
-}
-.modal-reservar .btn-login {
-    background: linear-gradient(135deg,#00b3b3,#008080);
-    border: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 0 4px 12px rgba(0,128,128,0.35);
-}
-.modal-reservar .btn-login:hover {
-    background: linear-gradient(135deg,#81e8e8,#b4ffff);
-    color: #0f172a;
-    transform: translateY(-1px);
-}
-.modal-reservar .btn-registro { background: transparent; border: 2px solid #1e88e5; color: #1e88e5; }
-.modal-reservar .btn-registro:hover { background: #1e88e5; color: white; transform: translateY(-1px); }
-
-/* Pequeño aviso y enlace secundario (ej: continuar sin cuenta) */
-.modal-reservar .nota { font-size: 0.9rem; color: #9fb1c7; text-align:center; margin-top:12px; }
-
-/* Evitar que el botón 'cancelar' quede visible por debajo del overlay */
-.cancelar-login { z-index: 100000; }
-
-@media (max-width: 520px) {
-    .modal-reservar-contenido { padding: 18px; max-width: 94%; }
-    .modal-reservar .modal-login-botones { flex-direction: column; }
-}
-
-.modal-login-contenido {
-    max-height: 86vh;
-    overflow-y: auto;
-}
-
-.modal-login-contenido h2 {
-    color: #26c6da;
-    margin-bottom: 10px;
-}
-
-.modal-login-contenido p {
-    margin-bottom: 20px;
-    opacity: 0.9;
-}
-
-.modal-login-botones {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-bottom: 15px;
-}
-
-.btn-login {
-    background: linear-gradient(135deg,#009a9a,#00c5c5);
-    color: white;
-    padding: 10px 18px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: bold;
-    border: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 0 4px 14px rgba(0, 128, 128, 0.35);
-    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.btn-login:hover {
-    background: linear-gradient(135deg,#62d1d1,#a2f4f4);
-    color: #0f172a;
-    transform: translateY(-1px);
-    box-shadow: 0 5px 18px rgba(0, 128, 128, 0.45);
-}
-
-.btn-registro {
-    border: 2px solid #1e88e5;
-    color: #1e88e5;
-    padding: 10px 18px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.btn-registro:hover {
-    background: #1e88e5;
-    color: white;
-}
-
-.cerrar-modal {
-    background: transparent;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.cerrar-modal:hover {
-    color: white;
-}
-
-/* =========================
-/*   BOTÓN CANCELAR LOGIN
-========================= */
-.cancelar-login {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    z-index: 100000; /* encima del overlay si es necesario */
-}
-
-.cancelar-login:hover {
-    color: #fff;
-}
-
 :root {
     --color-bg: #0f172a;
     --color-accent: #1b6ca8;
@@ -234,5 +60,38 @@ main, .destinos {
     --radius-md: 12px;
 }
 
-/* Helper container: ancho máximo usado por varias páginas */
-.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+/* Helper container */
+.container { 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 0 20px; 
+}
+
+/* Evitar scroll cuando modal está abierto */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* =========================
+   BOTÓN CANCELAR LOGIN (para páginas auth)
+========================= */
+.cancelar-login {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    z-index: 100000;
+    background: rgba(0,0,0,0.5);
+    padding: 10px 20px;
+    border-radius: 30px;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s;
+}
+
+.cancelar-login:hover {
+    color: #26c6da;
+    background: rgba(0,0,0,0.7);
+}

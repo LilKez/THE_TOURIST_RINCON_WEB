@@ -21,7 +21,7 @@
         <div class="header-brand">
             <img src="../img/Logo.png" alt="Logo" class="logo">
             <div class="logo-text">
-                <h1>Admin Panel</h1>
+                <h1>Panel Administrador</h1>
                 <span>THE TOURIST RINCÓN</span>
             </div>
         </div>
@@ -35,7 +35,7 @@
         </ul>
 
         <button class="btn-login-modern" onclick="cerrarSesion()">
-            Cerrar sesión
+            <i class="fa fa-sign-out-alt"></i> Cerrar sesión
         </button>
     </div>
 </header>
@@ -46,7 +46,7 @@
     <aside class="sidebar">
         <h3>Menú Admin</h3>
         <ul>
-            <li><a href="#" onclick="mostrarSeccion('destinos')"><i class="fa fa-map"></i> Destinos</a></li>
+            <li><a href="#" onclick="mostrarSeccion('destinos')" class="active"><i class="fa fa-map"></i> Destinos</a></li>
             <li><a href="#" onclick="mostrarSeccion('usuarios')"><i class="fa fa-users"></i> Perfiles</a></li>
             <li><a href="#" onclick="mostrarSeccion('reservas')"><i class="fa fa-calendar"></i> Reservas</a></li>
         </ul>
@@ -57,31 +57,28 @@
 
         <!-- DESTINOS -->
         <div id="destinos" class="seccion activa">
-            <h2>Gestionar Destinos</h2>
-
-            <button onclick="abrirModalDestino()" class="btn-add">
-                <i class="fa fa-plus"></i> Añadir Destino
-            </button>
-
-            <!-- AQUÍ SE GENERAN LAS CARDS -->
+            <div class="section-header">
+                <h2><i class="fa fa-map"></i> Gestionar Destinos</h2>
+                <button onclick="abrirModalDestino()" class="btn-add">
+                    <i class="fa fa-plus"></i> Añadir Destino
+                </button>
+            </div>
             <div id="listaDestinosAdmin" class="destinos-grid"></div>
         </div>
 
         <!-- PERFILES -->
         <div id="usuarios" class="seccion">
-            <h2>Gestionar Perfiles</h2>
-            <div id="listaUsuarios"></div>
-        </div>
-
-        <div id="usuarios" class="seccion">
-            <h2>Gestionar Perfiles</h2>
+            <div class="section-header">
+                <h2><i class="fa fa-users"></i> Gestionar Perfiles</h2>
+            </div>
             <div id="listaUsuarios"></div>
         </div>
 
         <!-- RESERVAS -->
         <div id="reservas" class="seccion">
-            <h2>Gestión de Reservas</h2>
-
+            <div class="section-header">
+                <h2><i class="fa fa-calendar"></i> Gestión de Reservas</h2>
+            </div>
             <div class="tabla-container">
                 <table class="tabla-reservas">
                     <thead>
@@ -89,99 +86,65 @@
                             <th>Cliente</th>
                             <th>Email</th>
                             <th>Destino</th>
-                            <th>Fechas</th>
+                            <th>Fecha</th>
                             <th>Personas</th>
                             <th>Precio</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
-
-                    <tbody id="listaReservas">
-                        <!-- EJEMPLO (luego se llena con JS) -->
-                        <tr>
-                            <td>Juan Pérez</td>
-                            <td>juan@email.com</td>
-                            <td>Cartagena</td>
-                            <td>10/03 - 15/03</td>
-                            <td>2</td>
-                            <td>$1.500.000</td>
-                            <td><span class="estado pendiente">Pendiente</span></td>
-                            <td class="acciones">
-                                <button class="edit-btn" title="Editar reserva" aria-label="Editar reserva">
-                                    <i class="fa fa-pen"></i>
-                                </button>
-                                <button class="delete-btn" title="Eliminar reserva" aria-label="Eliminar reserva">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody id="listaReservas"></tbody>
                 </table>
             </div>
-
         </div>
 
     </section>
 </main>
 
-<!-- MODAL -->
+<!-- MODAL DESTINO -->
 <div id="modalDestino" class="modal oculto">
     <div class="modal-content">
         <h3 id="modalTitle">Añadir Destino</h3>
-
         <form id="formDestino">
             <input type="hidden" id="destinoId">
-
             <div class="form-grid">
-
                 <div>
                     <label>Ciudad</label>
                     <input type="text" id="destinoNombre" placeholder="Nombre de la ciudad" required>
                 </div>
-
                 <div>
                     <label>País</label>
                     <input type="text" id="destinoPais" placeholder="País" required>
                 </div>
-
                 <div>
                     <label>Categoría</label>
-                    <input type="text" id="destinoCategoria" placeholder="Ej: Playa, Montaña, Ciudad" required>
+                    <input type="text" id="destinoCategoria" placeholder="Ej: Playa, Montaña" required>
                 </div>
-
                 <div>
                     <label>Clima</label>
-                    <input type="text" id="destinoClima" placeholder="Ej: Tropical, Templado" required>
+                    <input type="text" id="destinoClima" placeholder="Ej: Tropical" required>
                 </div>
-
                 <div>
                     <label>Precio</label>
                     <input type="number" id="destinoPrecio" min="0" placeholder="0" required>
                 </div>
-
                 <div>
                     <label>Puntuación</label>
                     <input type="number" step="0.1" id="destinoRating" min="0" max="5" placeholder="5" required>
                 </div>
-
             </div>
-
             <div>
                 <label>Descripción</label>
                 <textarea id="destinoDescripcion" placeholder="Descripción del destino" required></textarea>
             </div>
-
             <div class="form-buttons">
                 <button type="submit">Guardar</button>
                 <button type="button" onclick="cerrarModalDestino()">Cancelar</button>
             </div>
         </form>
-
     </div>
 </div>
 
-<!-- IMPORTANTE: defer evita error de inputs -->
 <script src="js/admin.js" defer></script>
 
 </body>

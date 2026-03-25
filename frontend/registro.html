@@ -10,7 +10,6 @@
 </head>
 <body>
 
-<!-- BOTÓN CANCELAR -->
 <a href="index.html" class="cancelar-login">← Cancelar</a>
 
 <header>
@@ -19,7 +18,7 @@
 </header>
 
 <section class="formulario-auth columnas">
-    <form id="registroForm" action="#" method="post">
+    <form id="registroForm">
         <div class="campo">
             <label for="nombre">Nombre</label>
             <input id="nombre" name="nombre" type="text" placeholder="Tu nombre" required>
@@ -45,44 +44,35 @@
     <p class="auth-switch">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
 </section>
 
-<!-- ================= FOOTER ================= -->
-    <footer class="footer">
-        <div class="footer-grid">
-            <div class="footer-about">
-                <h4>THE TOURIST RINCÓN</h4>
-                <p>Descubre destinos, reserva tu viaje y vive experiencias inolvidables.</p>
-            </div>
-
-            <div class="footer-links">
-                <h4>Enlaces</h4>
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="reservas.html">Reservas</a></li>
-                    <li><a href="historial.html">Historial</a></li>
-                    <li><a href="pago.html">Pago</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-contact">
-                <h4>Contacto</h4>
-                <ul>
-                    <li>Email: info@touristrincon.com</li>
-                    <li>Tel: +57 300 000 0000</li>
-                    <li><a href="#">Política de privacidad</a></li>
-                </ul>
-            </div>
+<footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-about">
+            <h4>THE TOURIST RINCÓN</h4>
+            <p>Descubre destinos, reserva tu viaje y vive experiencias inolvidables.</p>
         </div>
-
-        <div class="copyright">
-            <p>© 2026 Destinos Turísticos | Proyecto Académico</p>
+        <div class="footer-links">
+            <h4>Enlaces</h4>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="reservas.html">Reservas</a></li>
+                <li><a href="historial.html">Historial</a></li>
+            </ul>
         </div>
-    </footer>
+        <div class="footer-contact">
+            <h4>Contacto</h4>
+            <ul>
+                <li>Email: info@touristrincon.com</li>
+                <li>Tel: +57 300 000 0000</li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright">
+        <p>© 2026 Destinos Turísticos | Proyecto Académico</p>
+    </div>
+</footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/app.js"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <!-- JS -->
-        <script src="js/app.js"></script>
-
-    </body>
-    </html>
-
+</body>
+</html>

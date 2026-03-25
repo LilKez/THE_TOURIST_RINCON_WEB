@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Cuenta - THE TOURIST RINCÓN</title>
+    <link rel="icon" href="img/Logo.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/mi-cuenta.css">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="header-brand">
+                <img src="img/Logo.png" alt="Logo" class="logo">
+                <div class="logo-text">
+                    <h1>THE TOURIST RINCÓN</h1>
+                    <span>Viaja, descubre y planifica</span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="reservas.html">Reservas</a></li>
+                <li><a href="historial.html">Historial</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+            <div class="nav-user">
+                <div class="account-container">
+                    <button id="accountBtn" class="btn-login-modern">
+                        <i class="fa-solid fa-user"></i> Usuario
+                    </button>
+                    <div id="accountMenu" class="account-menu oculto"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="cuenta-main">
+    <div class="cuenta-container">
+        <div class="cuenta-header">
+            <h1><i class="fa fa-user-circle"></i> Mi Cuenta</h1>
+            <p>Gestiona tu información personal y preferencias</p>
+        </div>
+
+        <div class="cuenta-grid">
+            <!-- Perfil Section -->
+            <div class="cuenta-card">
+                <div class="card-header">
+                    <i class="fa fa-id-card"></i>
+                    <h2>Información Personal</h2>
+                </div>
+                <form id="perfilForm" class="cuenta-form">
+                    <div class="form-group">
+                        <label for="nombre"><i class="fa fa-user"></i> Nombre</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido"><i class="fa fa-user"></i> Apellido</label>
+                        <input type="text" id="apellido" name="apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email"><i class="fa fa-envelope"></i> Correo Electrónico</label>
+                        <input type="email" id="email" name="email" readonly disabled>
+                        <small class="form-hint">El correo no se puede modificar</small>
+                    </div>
+                    <button type="submit" class="btn-guardar">
+                        <i class="fa fa-save"></i> Guardar Cambios
+                    </button>
+                </form>
+            </div>
+
+            <!-- Cambiar Contraseña Section -->
+            <div class="cuenta-card">
+                <div class="card-header">
+                    <i class="fa fa-lock"></i>
+                    <h2>Cambiar Contraseña</h2>
+                </div>
+                <form id="passwordForm" class="cuenta-form">
+                    <div class="form-group">
+                        <label for="currentPassword"><i class="fa fa-key"></i> Contraseña Actual</label>
+                        <input type="password" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword"><i class="fa fa-lock"></i> Nueva Contraseña</label>
+                        <input type="password" id="newPassword" name="newPassword" required>
+                        <small class="form-hint">Mínimo 6 caracteres</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword"><i class="fa fa-check-circle"></i> Confirmar Contraseña</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn-cambiar">
+                        <i class="fa fa-refresh"></i> Actualizar Contraseña
+                    </button>
+                </form>
+            </div>
+
+            <!-- Estadísticas Section -->
+            <div class="cuenta-card stats-card">
+                <div class="card-header">
+                    <i class="fa fa-chart-line"></i>
+                    <h2>Mis Estadísticas</h2>
+                </div>
+                <div class="stats-content">
+                    <div class="stat-item">
+                        <i class="fa fa-calendar-check"></i>
+                        <div>
+                            <span class="stat-number" id="totalReservas">0</span>
+                            <span class="stat-label">Reservas Totales</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fa fa-clock"></i>
+                        <div>
+                            <span class="stat-number" id="reservasPendientes">0</span>
+                            <span class="stat-label">Reservas Pendientes</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fa fa-check-circle"></i>
+                        <div>
+                            <span class="stat-number" id="reservasCompletadas">0</span>
+                            <span class="stat-label">Viajes Completados</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fa fa-star"></i>
+                        <div>
+                            <span class="stat-number" id="destinosVisitados">0</span>
+                            <span class="stat-label">Destinos Visitados</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-about">
+            <h4>THE TOURIST RINCÓN</h4>
+            <p>Descubre destinos y vive experiencias inolvidables.</p>
+        </div>
+        <div class="footer-links">
+            <h4>Enlaces</h4>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="reservas.html">Reservas</a></li>
+                <li><a href="historial.html">Historial</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </div>
+        <div class="footer-contact">
+            <h4>Contacto</h4>
+            <ul>
+                <li><i class="fa fa-envelope"></i> info@touristrincon.com</li>
+                <li><i class="fa fa-phone"></i> +57 300 000 0000</li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright">
+        <p>© 2026 THE TOURIST RINCÓN | Proyecto Académico</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/app.js"></script>
+<script src="js/mi-cuenta.js"></script>
+</body>
+</html>
