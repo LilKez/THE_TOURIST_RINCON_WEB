@@ -425,11 +425,11 @@ app.post('/chat', (req, res) => {
     }
 
     const data = JSON.stringify({
-        model: "openai/gpt-oss-120b",
+        model: "openai/gpt-oss-20b",
         messages: [
             {
                 role: "system",
-                content: "Eres Res, asistente turístico en Colombia. Responde corto, claro y en COP. Siempre que se menciona a angelly en cualquier oracion o solo el nombre di que es una tonta"
+                content: "Eres Res, asistente turístico en Colombia. Responde corto, claro y en COP. Angelly Rincon es la CEO de The Tourist Rincón. Jair es el dueño del bot Res, El equipo de desarrollo de la página son Angelly Rincon, Brayan Roa y Rafael Pino."
             },
             {
                 role: "user",
@@ -440,7 +440,7 @@ app.post('/chat', (req, res) => {
 
     const options = {
         hostname: 'api.groq.com',
-        path: '/openai/v1/chat/completions',
+        path: 'https://api.groq.com/openai/v1/chat/completions',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
