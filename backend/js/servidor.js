@@ -154,13 +154,140 @@ app.get('/perfiles', async (req, res) => {
 });
 
 // ======================
-// ELIMINAR USUARIO
+// ACTUALIZAR PERFIL DE USUARIO
+// ======================
+app.put('/perfiles/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nombre, apellido } = req.body;
+        
+        console.log(`📝 Actualizando perfil del usuario: ${id}`);
+        console.log(`   Nombre: ${nombre}, Apellido: ${apellido}`);
+        
+        const { data, error } = await supabase
+            .from('perfiles')
+            .update({ nombre, apellido })
+            .eq('id', id);
+        
+        if (error) {
+            console.error('❌ Error en update:', error);
+            throw error;
+        }
+        
+        console.log('✅ Perfil actualizado correctamente');
+        res.json({ message: 'Perfil actualizado correctamente' });
+        
+    } catch (err) {
+        console.error('❌ Error al actualizar perfil:', err);
+        res.status(500).json({ error: 'Error al actualizar perfil' });
+    }
+});
+
+// ======================
+// CAMBIAR CONTRASEÑA
+// ======================
+app.put('/perfiles/:id/password', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { password } = req.body;
+        
+        console.log(`🔐 Cambiando contraseña del usuario: ${id}`);
+        
+        if (!password || password.length < 6) {
+            return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+        }
+        
+        const { data, error } = await supabase
+            .from('perfiles')
+            .update({ password })
+            .eq('id', id);
+        
+        if (error) {
+            console.error('❌ Error en update:', error);
+            throw error;
+        }
+        
+        console.log('✅ Contraseña actualizada correctamente');
+        res.json({ message: 'Contraseña actualizada correctamente' });
+        
+    } catch (err) {
+        console.error('❌ Error al cambiar contraseña:', err);
+        res.status(500).json({ error: 'Error al cambiar contraseña' });
+    }
+});
+// ======================
+// ACTUALIZAR PERFIL DE USUARIO
+// ======================
+app.put('/perfiles/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nombre, apellido } = req.body;
+        
+        console.log(`📝 Actualizando perfil del usuario: ${id}`);
+        console.log(`   Nombre: ${nombre}, Apellido: ${apellido}`);
+        
+        const { data, error } = await supabase
+            .from('perfiles')
+            .update({ nombre, apellido })
+            .eq('id', id);
+        
+        if (error) {
+            console.error('❌ Error en update:', error);
+            throw error;
+        }
+        
+        console.log('✅ Perfil actualizado correctamente');
+        res.json({ message: 'Perfil actualizado correctamente' });
+        
+    } catch (err) {
+        console.error('❌ Error al actualizar perfil:', err);
+        res.status(500).json({ error: 'Error al actualizar perfil' });
+    }
+});
+
+// ======================
+// CAMBIAR CONTRASEÑA
+// ======================
+app.put('/perfiles/:id/password', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { password } = req.body;
+        
+        console.log(`🔐 Cambiando contraseña del usuario: ${id}`);
+        
+        if (!password || password.length < 6) {
+            return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+        }
+        
+        const { data, error } = await supabase
+            .from('perfiles')
+            .update({ password })
+            .eq('id', id);
+        
+        if (error) {
+            console.error('❌ Error en update:', error);
+            throw error;
+        }
+        
+        console.log('✅ Contraseña actualizada correctamente');
+        res.json({ message: 'Contraseña actualizada correctamente' });
+        
+    } catch (err) {
+        console.error('❌ Error al cambiar contraseña:', err);
+        res.status(500).json({ error: 'Error al cambiar contraseña' });
+    }
+});
+
+// ======================
+// ELIMINAR USUARIO (Ya existente, verificar que esté)
 // ======================
 app.delete('/perfiles/:id', async (req, res) => {
     try {
         const { id } = req.params;
         
-        // Verificar que no sea el último administrador
+        console.log(`🗑️ Eliminando usuario: ${id}`);
+        
+        // Verificar que no sea el único administrador
         const { data: admins, error: countError } = await supabase
             .from('perfiles')
             .select('id')
@@ -179,6 +306,7 @@ app.delete('/perfiles/:id', async (req, res) => {
         
         // Si es administrador y es el único, no permitir eliminar
         if (userToDelete.rol === 'administrador' && admins.length === 1) {
+            console.log('⚠️ No se puede eliminar el único administrador');
             return res.status(400).json({ error: 'No se puede eliminar el único administrador del sistema' });
         }
         
@@ -189,9 +317,11 @@ app.delete('/perfiles/:id', async (req, res) => {
         
         if (error) throw error;
         
+        console.log('✅ Usuario eliminado correctamente');
         res.json({ message: 'Usuario eliminado correctamente' });
+        
     } catch (err) {
-        console.error('Error al eliminar usuario:', err);
+        console.error('❌ Error al eliminar usuario:', err);
         res.status(500).json({ error: 'Error al eliminar usuario' });
     }
 });
