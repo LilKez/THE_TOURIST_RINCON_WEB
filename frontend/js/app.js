@@ -270,9 +270,6 @@ function inicializarMenuUsuario() {
                     <a href="historial.html">
                         <i class="fa-solid fa-history"></i> Historial
                     </a>
-                    <a href="#">
-                        <i class="fa-solid fa-gear"></i> Configuración
-                    </a>
                     <hr>
                     <a href="#" class="logout">
                         <i class="fa-solid fa-sign-out-alt"></i> Cerrar sesión
@@ -457,13 +454,28 @@ function reservarDestino() {
     if (nombreSpan) nombreSpan.textContent = destinoActual.nombre;
     
     // Limpiar campos anteriores
-    document.getElementById("reservaFecha").value = '';
-    document.getElementById("reservaPersonas").value = '1';
-    document.getElementById("reservaNotas").value = '';
+    const fechaField = document.getElementById("reservaFecha");
+    const personasField = document.getElementById("reservaPersonas");
+    const notasField = document.getElementById("reservaNotas");
     
-    document.getElementById("modalReserva")?.classList.remove("oculto");
+    if (fechaField) fechaField.value = '';
+    if (personasField) personasField.value = '1';
+    if (notasField) notasField.value = '';
+    
+    const modal = document.getElementById("modalReserva");
+    if (modal) modal.classList.remove("oculto");
 }
 
+function cerrarModalReserva() {
+    const modal = document.getElementById("modalReserva");
+    if (modal) {
+        modal.classList.add("oculto");
+    }
+}
+
+// ==============================
+// ENVIAR RESERVA
+// ==============================
 async function enviarReserva(e) {
     e.preventDefault();
     if (!usuarioActual.autenticado) {
@@ -509,15 +521,26 @@ async function enviarReserva(e) {
         return;
     }
     
+    // Calcular fecha fin (3 días después por defecto)
+    const fechaFin = new Date(fechaSeleccionada);
+    fechaFin.setDate(fechaFin.getDate() + 3);
+    const fechaFinStr = fechaFin.toISOString().split('T')[0];
+    
+    // Obtener nombre del usuario desde localStorage
+    const nombreUsuario = localStorage.getItem('nombre') || '';
+    const emailUsuario = localStorage.getItem('email') || '';
+    const userId = localStorage.getItem('userId');
+    
     try {
         const reserva = {
-            usuario_id: localStorage.getItem('userId'),
-            usuario_email: localStorage.getItem('email'),
+            usuario_id: userId,
             destino_id: destinoActual.id,
-            destino_nombre: destinoActual.nombre,
-            fecha: fecha,
+            nombre_cliente: nombreUsuario,
+            email: emailUsuario,
+            destino: destinoActual.nombre,
+            fecha_inicio: fecha,
+            fecha_fin: fechaFinStr,
             personas: parseInt(personas),
-            notas: notas || '',
             precio_total: destinoActual.precio * parseInt(personas),
             estado: "pendiente",
             created_at: new Date().toISOString()
@@ -532,16 +555,20 @@ async function enviarReserva(e) {
         });
         
         if (response.ok) {
-            alert(`✅ ¡Reserva confirmada!\n\nDestino: ${destinoActual.nombre}\nFecha: ${new Date(fecha).toLocaleDateString('es-CO')}\nPersonas: ${personas}\nTotal: $${(destinoActual.precio * personas).toLocaleString()}\n\nPuedes ver tus reservas en el historial.`);
+            const result = await response.json();
+            console.log("✅ Reserva creada:", result);
+            
+            alert(`✅ ¡Reserva confirmada!\n\nDestino: ${destinoActual.nombre}\nFecha de inicio: ${new Date(fecha).toLocaleDateString('es-CO')}\nFecha de fin: ${new Date(fechaFinStr).toLocaleDateString('es-CO')}\nPersonas: ${personas}\nTotal: $${(destinoActual.precio * personas).toLocaleString()}\n\nPuedes ver tus reservas en el historial.`);
+            
             cerrarModalReserva();
             
-            // Opcional: preguntar si quiere ver historial
+            // Preguntar si quiere ver historial
             if (confirm("¿Ver tus reservas ahora?")) {
                 window.location.href = "historial.html";
             }
         } else {
             const error = await response.text();
-            console.error("Error:", error);
+            console.error("Error del servidor:", error);
             alert("❌ Error al crear la reserva. Intenta nuevamente.");
         }
     } catch (error) {
