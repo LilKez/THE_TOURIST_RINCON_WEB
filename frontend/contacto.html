@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Contacto - THE TOURIST RINCÓN</title>
+    <link rel="icon" href="img/Logo.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/contacto.css">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<header>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="header-brand">
+                <img src="img/Logo.png" alt="Logo THE TOURIST RINCÓN" class="logo">
+                <div class="logo-text">
+                    <h1>THE TOURIST RINCÓN</h1>
+                    <span>Viaja, descubre y planifica</span>
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="reservas.html">Reservas</a></li>
+                <li><a href="historial.html">Historial</a></li>
+                <li><a href="contacto.html" class="active">Contacto</a></li>
+            </ul>
+
+            <div class="nav-user">
+                <div class="account-container">
+                    <button id="accountBtn" class="btn-login-modern">
+                        <i class="fa-solid fa-user"></i> Usuario
+                    </button>
+                    <div id="accountMenu" class="account-menu oculto"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+    <div class="hero-content">
+        <h2 class="hero-title">Contacto</h2>
+        <p class="hero-subtitle">Estamos aquí para ayudarte</p>
+    </div>
+</section>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="contacto-main">
+    <div class="contacto-container">
+        
+        <!-- Información de contacto -->
+        <div class="contacto-info">
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fa fa-map-marker-alt"></i>
+                </div>
+                <h3>Dirección</h3>
+                <p>Calle 123 #45-67</p>
+                <p>Cartagena, Colombia</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fa fa-phone"></i>
+                </div>
+                <h3>Teléfono</h3>
+                <p>+57 300 000 0000</p>
+                <p>+57 601 123 4567</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fa fa-envelope"></i>
+                </div>
+                <h3>Email</h3>
+                <p>info@touristrincon.com</p>
+                <p>soporte@touristrincon.com</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon">
+                    <i class="fa fa-clock"></i>
+                </div>
+                <h3>Horario de Atención</h3>
+                <p>Lunes a Viernes: 8:00 - 18:00</p>
+                <p>Sábados: 9:00 - 13:00</p>
+            </div>
+        </div>
+
+        <!-- Formulario de contacto -->
+        <div class="contacto-formulario">
+            <h2><i class="fa fa-paper-plane"></i> Envíanos un mensaje</h2>
+            <p>¿Tienes preguntas, sugerencias o necesitas ayuda? Completa el formulario y te responderemos lo antes posible.</p>
+            
+            <form id="contactoForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre"><i class="fa fa-user"></i> Nombre completo</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email"><i class="fa fa-envelope"></i> Correo electrónico</label>
+                        <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="telefono"><i class="fa fa-phone"></i> Teléfono (opcional)</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="+57 300 000 0000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="asunto"><i class="fa fa-tag"></i> Asunto</label>
+                        <select id="asunto" name="asunto" required>
+                            <option value="">Selecciona un asunto</option>
+                            <option value="consulta">Consulta general</option>
+                            <option value="reserva">Problema con reserva</option>
+                            <option value="sugerencia">Sugerencia</option>
+                            <option value="reclamo">Reclamo</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mensaje"><i class="fa fa-comment"></i> Mensaje</label>
+                    <textarea id="mensaje" name="mensaje" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                </div>
+                
+                <button type="submit" class="btn-enviar">
+                    <i class="fa fa-paper-plane"></i> Enviar mensaje
+                </button>
+            </form>
+            
+            <div id="formMensaje" class="form-mensaje"></div>
+        </div>
+        
+        <!-- Redes sociales -->
+        <div class="contacto-social">
+            <h2><i class="fa fa-share-alt"></i> Síguenos en redes sociales</h2>
+            <div class="social-links">
+                <a href="#" class="social-link facebook" target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                    <span>Facebook</span>
+                </a>
+                <a href="#" class="social-link instagram" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                </a>
+                <a href="#" class="social-link twitter" target="_blank">
+                    <i class="fab fa-twitter"></i>
+                    <span>Twitter</span>
+                </a>
+                <a href="#" class="social-link whatsapp" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </a>
+            </div>
+        </div>
+        
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-about">
+            <h4>THE TOURIST RINCÓN</h4>
+            <p>Descubre destinos, reserva tu viaje y vive experiencias inolvidables.</p>
+        </div>
+        <div class="footer-links">
+            <h4>Enlaces</h4>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="reservas.html">Reservas</a></li>
+                <li><a href="historial.html">Historial</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </div>
+        <div class="footer-contact">
+            <h4>Contacto</h4>
+            <ul>
+                <li><i class="fa fa-envelope"></i> info@touristrincon.com</li>
+                <li><i class="fa fa-phone"></i> +57 300 000 0000</li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright">
+        <p>© 2026 THE TOURIST RINCÓN | Proyecto Académico</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/app.js"></script>
+<script src="js/contacto.js"></script>
+</body>
+</html>
