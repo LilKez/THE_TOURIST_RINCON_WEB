@@ -43,18 +43,20 @@ class DestinationCard extends StatelessWidget {
                       ? CachedNetworkImage(
                           imageUrl: destination.primeraImagen,
                           fit: BoxFit.cover,
-                          placeholder: (_, __) => Container(
+                          placeholder: (context, url) => Container(
                             color: AppTheme.surface,
                             child: const Center(
                               child: SizedBox(
                                 width: 24,
                                 height: 24,
                                 child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: AppTheme.accent),
+                                  strokeWidth: 2,
+                                  color: AppTheme.accent,
+                                ),
                               ),
                             ),
                           ),
-                          errorWidget: (_, __, ___) => _placeholder(),
+                          errorWidget: (context, url, error) => _placeholder(),
                         )
                       : _placeholder(),
 
@@ -65,7 +67,9 @@ class DestinationCard extends StatelessWidget {
                       left: 8,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: AppTheme.accent.withValues(alpha: 0.9),
                           borderRadius: BorderRadius.circular(8),
@@ -88,7 +92,9 @@ class DestinationCard extends StatelessWidget {
                       right: 8,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 3),
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.black54,
                           borderRadius: BorderRadius.circular(8),
@@ -96,8 +102,11 @@ class DestinationCard extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.star,
-                                color: Colors.amber, size: 12),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                              size: 12,
+                            ),
                             const SizedBox(width: 2),
                             Text(
                               destination.rating!.toStringAsFixed(1),
@@ -137,8 +146,11 @@ class DestinationCard extends StatelessWidget {
                     if (destination.pais != null)
                       Row(
                         children: [
-                          const Icon(Icons.location_on,
-                              color: AppTheme.accent, size: 12),
+                          const Icon(
+                            Icons.location_on,
+                            color: AppTheme.accent,
+                            size: 12,
+                          ),
                           const SizedBox(width: 3),
                           Expanded(
                             child: Text(
@@ -157,13 +169,18 @@ class DestinationCard extends StatelessWidget {
                     if (destination.clima != null)
                       Row(
                         children: [
-                           const Icon(Icons.wb_sunny,
-                              color: Colors.amber, size: 12),
+                          const Icon(
+                            Icons.wb_sunny,
+                            color: Colors.amber,
+                            size: 12,
+                          ),
                           const SizedBox(width: 3),
                           Text(
                             destination.clima!,
                             style: const TextStyle(
-                                color: AppTheme.textSecondary, fontSize: 10),
+                              color: AppTheme.textSecondary,
+                              fontSize: 10,
+                            ),
                           ),
                         ],
                       ),

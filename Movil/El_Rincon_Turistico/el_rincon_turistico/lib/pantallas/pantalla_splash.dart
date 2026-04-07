@@ -28,12 +28,14 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    _fadeAnim = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
-    _scaleAnim = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
-    );
+    _fadeAnim = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+    _scaleAnim = Tween<double>(
+      begin: 0.5,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
     _controller.forward();
     _initApp();
   }
@@ -44,14 +46,18 @@ class _SplashScreenState extends State<SplashScreen>
 
     final auth = context.read<AuthProvider>();
 
-    // Validar conexión al servidor en puerto 3001
-    setState(() => _statusMessage = 'Verificando servidor (puerto ${ApiConfig.port})...');
+    // Validar conexión al servidor en puerto 3000
+    setState(
+      () =>
+          _statusMessage = 'Verificando servidor (puerto ${ApiConfig.port})...',
+    );
     final online = await auth.checkServer();
 
     if (!online) {
       setState(() {
         _serverError = true;
-        _statusMessage = 'No se pudo conectar al servidor\n${ApiConfig.serverUrl}';
+        _statusMessage =
+            'No se pudo conectar al servidor\n${ApiConfig.serverUrl}';
       });
       return;
     }
@@ -72,8 +78,8 @@ class _SplashScreenState extends State<SplashScreen>
   void _navigateTo(Widget screen) {
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => screen,
-        transitionsBuilder: (_, anim, __, child) =>
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionsBuilder: (context, anim, secondaryAnimation, child) =>
             FadeTransition(opacity: anim, child: child),
         transitionDuration: const Duration(milliseconds: 500),
       ),
@@ -102,11 +108,7 @@ class _SplashScreenState extends State<SplashScreen>
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              AppTheme.primary,
-              AppTheme.primaryLight,
-              AppTheme.surface,
-            ],
+            colors: [AppTheme.primary, AppTheme.primaryLight, AppTheme.surface],
           ),
         ),
         child: Center(
@@ -136,16 +138,16 @@ class _SplashScreenState extends State<SplashScreen>
                   Text(
                     'The Tourist Rincón',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: AppTheme.accent,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      color: AppTheme.accent,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Descubre Colombia',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: AppTheme.textSecondary,
-                        ),
+                      color: AppTheme.textSecondary,
+                    ),
                   ),
                   const SizedBox(height: 40),
                   if (!_serverError)
@@ -160,8 +162,11 @@ class _SplashScreenState extends State<SplashScreen>
                   if (_serverError)
                     Column(
                       children: [
-                        const Icon(Icons.cloud_off,
-                            color: AppTheme.danger, size: 48),
+                        const Icon(
+                          Icons.cloud_off,
+                          color: AppTheme.danger,
+                          size: 48,
+                        ),
                         const SizedBox(height: 12),
                         ElevatedButton.icon(
                           onPressed: _retry,
@@ -181,10 +186,10 @@ class _SplashScreenState extends State<SplashScreen>
                     _statusMessage,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: _serverError
-                              ? AppTheme.danger
-                              : AppTheme.textSecondary,
-                        ),
+                      color: _serverError
+                          ? AppTheme.danger
+                          : AppTheme.textSecondary,
+                    ),
                   ),
                 ],
               ),

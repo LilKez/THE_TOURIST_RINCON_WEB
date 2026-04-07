@@ -44,9 +44,10 @@ class CustomDrawer extends StatelessWidget {
                     child: Text(
                       (user?.nombre ?? 'U')[0].toUpperCase(),
                       style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -62,20 +63,25 @@ class CustomDrawer extends StatelessWidget {
                   Text(
                     user?.email ?? '',
                     style: const TextStyle(
-                        color: AppTheme.textSecondary, fontSize: 13),
+                      color: AppTheme.textSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                   if (user?.esAdmin == true) ...[
                     const SizedBox(height: 6),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: AppTheme.accent.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Text('Admin',
-                          style:
-                              TextStyle(color: AppTheme.accent, fontSize: 11)),
+                      child: const Text(
+                        'Admin',
+                        style: TextStyle(color: AppTheme.accent, fontSize: 11),
+                      ),
                     ),
                   ],
                 ],
@@ -147,10 +153,12 @@ class CustomDrawer extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     auth.serverOnline
-                        ? 'Servidor conectado (3001)'
+                        ? 'Servidor conectado (3000)'
                         : 'Sin conexión',
                     style: const TextStyle(
-                        color: AppTheme.textSecondary, fontSize: 11),
+                      color: AppTheme.textSecondary,
+                      fontSize: 11,
+                    ),
                   ),
                 ],
               ),
@@ -181,9 +189,7 @@ class CustomDrawer extends StatelessWidget {
 
   void _navigate(BuildContext context, Widget screen) {
     Navigator.of(context).pop(); // close drawer
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => screen),
-    );
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
   }
 }
 
