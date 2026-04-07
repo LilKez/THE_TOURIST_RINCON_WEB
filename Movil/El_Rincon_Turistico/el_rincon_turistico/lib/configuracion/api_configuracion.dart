@@ -1,17 +1,29 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 class ApiConfig {
-  // Puerto 3001 para la app móvil
-  static const int port = 3001;
+  // Puerto 3000 para coincidir con el servidor Node.js
+  static const int port = 3000;
 
   // Detecta automáticamente la IP del servidor según la plataforma
   static String get baseUrl {
-    // En Android emulator, 10.0.2.2 apunta al localhost del host
-    // En iOS simulator y dispositivos reales, usar la IP de la máquina
-    if (Platform.isAndroid) {
-      return 'http://10.0.2.2:$port';
+    // IMPORTANTE: Primero verificar si es web
+    if (kIsWeb) {
+      // En web, usar localhost directamente
+      return 'http://localhost:$port';
     }
-    return 'http://localhost:$port';
+
+    // Si NO es web, usar defaultTargetPlatform para móvil
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        // En Android emulator, 10.0.2.2 apunta al localhost del host
+        return 'http://10.0.2.2:$port';
+      case TargetPlatform.iOS:
+        // iOS simulator y dispositivos
+        return 'http://localhost:$port';
+      default:
+        // Otros (macOS, Windows, Linux)
+        return 'http://localhost:$port';
+    }
   }
 
   // Permite configurar IP manualmente (para dispositivos físicos)

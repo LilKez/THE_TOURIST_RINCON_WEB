@@ -39,10 +39,8 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
               // Compartir (elemento móvil)
               IconButton(
                 icon: const Icon(Icons.share),
-                onPressed: () => SharePlus.instance.share(
-                  ShareParams(
-                    text: '¡Mira este destino! ${dest.nombre} - \$${NumberFormat("#,###", "es_CO").format(dest.precio)} COP en The Tourist Rincón',
-                  ),
+                onPressed: () => Share.share(
+                  '¡Mira este destino! ${dest.nombre} - \$${NumberFormat("#,###", "es_CO").format(dest.precio)} COP en The Tourist Rincón',
                 ),
               ),
             ],
@@ -55,24 +53,31 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                       itemBuilder: (_, i) => CachedNetworkImage(
                         imageUrl: images[i],
                         fit: BoxFit.cover,
-                        placeholder: (_, __) => Container(
+                        placeholder: (_, _) => Container(
                           color: AppTheme.surface,
                           child: const Center(
                             child: CircularProgressIndicator(
-                                color: AppTheme.accent),
+                              color: AppTheme.accent,
+                            ),
                           ),
                         ),
-                        errorWidget: (_, __, ___) => Container(
+                        errorWidget: (_, _, _) => Container(
                           color: AppTheme.surface,
-                          child: const Icon(Icons.image_not_supported,
-                              size: 64, color: AppTheme.textSecondary),
+                          child: const Icon(
+                            Icons.image_not_supported,
+                            size: 64,
+                            color: AppTheme.textSecondary,
+                          ),
                         ),
                       ),
                     )
                   : Container(
                       color: AppTheme.surface,
-                      child: const Icon(Icons.landscape,
-                          size: 80, color: AppTheme.textSecondary),
+                      child: const Icon(
+                        Icons.landscape,
+                        size: 80,
+                        color: AppTheme.textSecondary,
+                      ),
                     ),
             ),
           ),
@@ -87,8 +92,10 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                   (i) => Container(
                     width: i == _currentImageIndex ? 24 : 8,
                     height: 8,
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 3, vertical: 12),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 3,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
                       color: i == _currentImageIndex
                           ? AppTheme.accent
@@ -112,9 +119,7 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                     Expanded(
                       child: Text(
                         dest.nombre,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
+                        style: Theme.of(context).textTheme.headlineSmall
                             ?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -123,7 +128,9 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 8),
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: AppTheme.accent,
                         borderRadius: BorderRadius.circular(20),
@@ -150,8 +157,7 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                       _infoChip(Icons.location_on, dest.pais!),
                     if (dest.categoria != null)
                       _infoChip(Icons.category, dest.categoria!),
-                    if (dest.clima != null)
-                      _infoChip(Icons.cloud, dest.clima!),
+                    if (dest.clima != null) _infoChip(Icons.cloud, dest.clima!),
                     if (dest.rating != null)
                       _infoChip(Icons.star, '${dest.rating}'),
                   ],
@@ -165,11 +171,11 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                     children: [
                       Text(
                         'Descripción',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: AppTheme.accent,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: AppTheme.accent,
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                       const SizedBox(height: 8),
                       Text(
@@ -223,7 +229,10 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
         children: [
           Icon(icon, size: 16, color: AppTheme.accent),
           const SizedBox(width: 6),
-          Text(label, style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
+          Text(
+            label,
+            style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+          ),
         ],
       ),
     );
@@ -257,7 +266,11 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setSheetState) => Padding(
           padding: EdgeInsets.fromLTRB(
-              20, 20, 20, MediaQuery.of(ctx).viewInsets.bottom + 20),
+            20,
+            20,
+            20,
+            MediaQuery.of(ctx).viewInsets.bottom + 20,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,27 +286,36 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              Text('Reservar: ${widget.destination.nombre}',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppTheme.accent,
-                        fontWeight: FontWeight.bold,
-                      )),
+              Text(
+                'Reservar: ${widget.destination.nombre}',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: AppTheme.accent,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 20),
 
               // Selector de fecha (elemento móvil nativo)
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading:
-                    const Icon(Icons.calendar_today, color: AppTheme.accent),
+                leading: const Icon(
+                  Icons.calendar_today,
+                  color: AppTheme.accent,
+                ),
                 title: Text(
                   selectedDate != null
-                      ? DateFormat('dd MMMM yyyy', 'es_CO')
-                          .format(selectedDate!)
+                      ? DateFormat(
+                          'dd MMMM yyyy',
+                          'es_CO',
+                        ).format(selectedDate!)
                       : 'Seleccionar fecha',
                   style: const TextStyle(color: AppTheme.textPrimary),
                 ),
-                trailing: const Icon(Icons.arrow_forward_ios,
-                    size: 16, color: AppTheme.textSecondary),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: AppTheme.textSecondary,
+                ),
                 onTap: () async {
                   final date = await showDatePicker(
                     context: ctx,
@@ -322,24 +344,33 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                 children: [
                   const Icon(Icons.people, color: AppTheme.accent),
                   const SizedBox(width: 16),
-                  const Text('Personas:',
-                      style: TextStyle(color: AppTheme.textPrimary)),
+                  const Text(
+                    'Personas:',
+                    style: TextStyle(color: AppTheme.textPrimary),
+                  ),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon(Icons.remove_circle_outline,
-                        color: AppTheme.accent),
+                    icon: const Icon(
+                      Icons.remove_circle_outline,
+                      color: AppTheme.accent,
+                    ),
                     onPressed: personas > 1
                         ? () => setSheetState(() => personas--)
                         : null,
                   ),
-                  Text('$personas',
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold)),
+                  Text(
+                    '$personas',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   IconButton(
-                    icon: const Icon(Icons.add_circle_outline,
-                        color: AppTheme.accent),
+                    icon: const Icon(
+                      Icons.add_circle_outline,
+                      color: AppTheme.accent,
+                    ),
                     onPressed: personas < 20
                         ? () => setSheetState(() => personas++)
                         : null,
@@ -363,15 +394,20 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Total:',
-                      style: TextStyle(
-                          color: AppTheme.textSecondary, fontSize: 16)),
+                  const Text(
+                    'Total:',
+                    style: TextStyle(
+                      color: AppTheme.textSecondary,
+                      fontSize: 16,
+                    ),
+                  ),
                   Text(
                     '\$${NumberFormat("#,###", "es_CO").format(widget.destination.precio * personas)}',
                     style: const TextStyle(
-                        color: AppTheme.accent,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold),
+                      color: AppTheme.accent,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -385,24 +421,22 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                   onPressed: selectedDate == null
                       ? null
                       : () {
-                          final fechaFin = selectedDate!
-                              .add(const Duration(days: 3));
+                          final fechaFin = selectedDate!.add(
+                            const Duration(days: 3),
+                          );
                           final reservation = ReservationModel(
                             usuarioId: auth.user!.id,
                             destinoId: widget.destination.id,
                             nombreCliente: auth.user!.nombreCompleto,
                             email: auth.user!.email,
                             destino: widget.destination.nombre,
-                            fechaInicio: selectedDate!
-                                .toIso8601String()
-                                .split('T')[0],
-                            fechaFin: fechaFin
-                                .toIso8601String()
-                                .split('T')[0],
+                            fechaInicio: selectedDate!.toIso8601String().split(
+                              'T',
+                            )[0],
+                            fechaFin: fechaFin.toIso8601String().split('T')[0],
                             personas: personas,
-                            precioTotal:
-                                (widget.destination.precio * personas)
-                                    .toDouble(),
+                            precioTotal: (widget.destination.precio * personas)
+                                .toDouble(),
                             notas: notasCtrl.text.isNotEmpty
                                 ? notasCtrl.text
                                 : null,
@@ -411,8 +445,8 @@ class _DestinationDetailScreenState extends State<DestinationDetailScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => PaymentScreen(
-                                  reservation: reservation),
+                              builder: (_) =>
+                                  PaymentScreen(reservation: reservation),
                             ),
                           );
                         },
