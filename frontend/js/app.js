@@ -681,3 +681,44 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
+
+document.getElementById("formReserva").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    // Datos básicos
+    const fecha = document.getElementById("reservaFecha").value;
+    const personas = document.getElementById("reservaPersonas").value;
+
+    // Datos tarjeta
+    const numero = document.getElementById("cardNumber").value;
+    const nombre = document.getElementById("cardName").value;
+    const expiracion = document.getElementById("cardExpiry").value;
+    const cvv = document.getElementById("cardCvv").value;
+
+    // Validación simple
+    if (!numero || !nombre || !expiracion || !cvv) {
+        alert("❌ Completa todos los datos de la tarjeta");
+        return;
+    }
+
+    if (numero.length < 16) {
+        alert("❌ Número de tarjeta inválido");
+        return;
+    }
+
+    // 🔄 Simulación de pago
+    const btn = this.querySelector("button[type='submit']");
+    btn.textContent = "Procesando pago...";
+    btn.disabled = true;
+
+    setTimeout(() => {
+        alert("✅ Pago realizado con éxito y reserva confirmada");
+
+        // Aquí podrías guardar en BD si quieres
+        cerrarModalReserva();
+
+        this.reset();
+        btn.textContent = "Confirmar reserva y pagar";
+        btn.disabled = false;
+    }, 2000);
+});
